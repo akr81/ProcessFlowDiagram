@@ -1,0 +1,35 @@
+{
+  "PFD template": {
+    "prefix": "pfd",
+    "body": [
+      "```puml",
+      "!include ./include/pfd_tool.pu",
+      "",
+      "\\$d(\"process\", \"in1,in2\", \"out\")"
+			"```"
+    ],
+    "description": "PFD template"
+  },
+  "draft process": {
+    "prefix": "d",
+    "body": [
+      "\\$d(\"p\", \"in\", \"out\")"
+    ],
+    "description": "draft process"
+  },
+  "draft process from clipboard": {
+    "prefix": "c",
+    "body": [
+      "\\$d(\"p\", \"$CLIPBOARD\", \"$CLIPBOARD\")"
+    ],
+    "description": "draft process from clipboard"
+  },
+  "reverse draft process from current line": {
+    "prefix": "r",
+    "body": [
+      "",
+      "${TM_CURRENT_LINE/\\$d\\((.*)\\,\\s*\"(.*)\"\\,\\s*\"(.*)\"\\)r/$d(\"p\", \"$3\", \"$2\")/}"
+    ],
+    "description": "reverse draft process from current line"
+  }
+}
