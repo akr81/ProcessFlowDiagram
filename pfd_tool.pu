@@ -1,0 +1,104 @@
+@startuml
+skinparam agent {
+    backgroundcolor #white
+    bordercolor #black
+}
+
+' d
+' Procedure for PFD process in/out with draft mode
+' [in] $process Specify process
+' [in] $inputs  Process inputs. It should be written as string with "," delimiter.
+' [in] $outputs Process outputs. It should be written as string with "," delimiter.
+!procedure $d($process, $inputs, $outputs)
+  $process_in($process, $inputs, "true")
+  $process_out($process, $outputs, "true")
+!endprocedure
+
+' p
+' Procedure for PFD process in/out with normal mode
+' [in] $process Specify process
+' [in] $inputs  Process inputs. It should be written as string with "," delimiter.
+' [in] $outputs Process outputs. It should be written as string with "," delimiter.
+!procedure $p($process, $inputs, $outputs)
+  $process_in($process, $inputs)
+  $process_out($process, $outputs)
+!endprocedure
+
+' process_in
+' Procedure for PFD process input
+' [in] $process Specify process
+' [in] $inputs  Process inputs. It should be written as string with "," delimiter.
+' [in] $draft   If specified, make models (optional)
+!procedure $process_in($process, $inputs, $draft="")
+  $process_common($process, $inputs, "-->", $draft)
+!endprocedure
+
+' pin
+' Short alias of process_in
+!procedure $pin($process, $inputs, $draft="")
+  $process_in($process, $inputs, $draft)
+!endprocedure
+
+' din
+' Short alias of process_in (draft)
+!procedure $din($process, $inputs)
+  $process_in($process, $inputs, "true")
+!endprocedure
+
+' process_out
+' Procedure for PFD process output
+' [in] $process  Specify process
+' [in] $outputs  Process outputs. It should be written as string with "," delimiter.
+' [in] $draft    If specified, make models (optional)
+!procedure $process_out($process, $outputs, $draft="")
+  $process_common($process, $outputs, "<--", $draft)
+!endprocedure
+
+' pout
+' Short alias of process_out
+!procedure $pout($process, $outputs, $draft="")
+  $process_out($process, $outputs, $draft)
+!endprocedure
+
+' dout
+' Short alias of process_out (draft)
+!procedure $dout($process, $outputs)
+  $process_out($process, $outputs, "true")
+!endprocedure
+
+' process_common
+' Common procedure for both in/out
+' Note: This should called by other procedure
+' [in] $process   Specify process
+' [in] $inout     Process inputs/outputs. It should be written as string with "," delimiter.
+' [in] $connector Connector for from in/out to process  (ex. "-->" or "<--")
+' [in] $draft     If specified, make models (optional)
+!procedure $process_common($process, $inout, $connector, $draft="")
+  ' Add usecase type model as process
+  !if ($draft != "")
+    usecase $process
+  !endif
+  ' Repeat by ","
+  !while (%strpos($inout, ",") > 0)
+    ' Separate string by ","
+    !$sub = %substr($inout, 0, %strpos($inout, ","))
+
+    ' Add agent type model as input
+    !if ($draft != "")
+      agent $sub
+    !endif
+    $sub $connector $process
+
+    ' Update $inout
+    !$inout = %substr($inout, %strpos($inout, ",") + 1)
+  !endwhile
+
+  !if ($draft != "")
+    agent $inout
+  !endif
+  ' last element
+  $inout $connector $process
+
+!endprocedure
+
+@enduml
