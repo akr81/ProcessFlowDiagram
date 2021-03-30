@@ -30,7 +30,7 @@ skinparam agent {
 ' [in] $inputs  Process inputs. It should be written as string with "," delimiter.
 ' [in] $draft   If specified, make models (optional)
 !procedure $process_in($process, $inputs, $draft="")
-  $process_common($process, $inputs, "-->", $draft)
+  $process_common($process, $inputs, "i", $draft)
 !endprocedure
 
 ' pin
@@ -51,7 +51,7 @@ skinparam agent {
 ' [in] $outputs  Process outputs. It should be written as string with "," delimiter.
 ' [in] $draft    If specified, make models (optional)
 !procedure $process_out($process, $outputs, $draft="")
-  $process_common($process, $outputs, "<--", $draft)
+  $process_common($process, $outputs, "o", $draft)
 !endprocedure
 
 ' pout
@@ -71,13 +71,14 @@ skinparam agent {
 ' Note: This should called by other procedure
 ' [in] $process   Specify process
 ' [in] $inout     Process inputs/outputs. It should be written as string with "," delimiter.
-' [in] $connector Connector for from in/out to process  (ex. "-->" or "<--")
+' [in] $mode      Mode of inout (ex. "i" or "o")
 ' [in] $draft     If specified, make models (optional)
-!procedure $process_common($process, $inout, $connector, $draft="")
+!procedure $process_common($process, $inout, $mode, $draft="")
   ' Add usecase type model as process
   !if ($draft != "")
     usecase $process
   !endif
+
   ' Repeat by ","
   !while (%strpos($inout, ",") > 0)
     ' Separate string by ","
@@ -87,7 +88,12 @@ skinparam agent {
     !if ($draft != "")
       agent $sub
     !endif
-    $sub $connector $process
+    ' Decide connection direction
+    !if ($mode == "i")
+      $sub --> $process
+    !else
+      $process --> $sub
+    !endif
 
     ' Update $inout
     !$inout = %substr($inout, %strpos($inout, ",") + 1)
@@ -96,9 +102,13 @@ skinparam agent {
   !if ($draft != "")
     agent $inout
   !endif
-  ' last element
-  $inout $connector $process
 
+  ' last element
+  !if ($mode == "i")
+    $inout --> $process
+  !else
+    $process --> $inout
+  !endif
 !endprocedure
 
 @enduml
