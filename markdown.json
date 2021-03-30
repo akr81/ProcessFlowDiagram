@@ -31,5 +31,15 @@
       "${TM_CURRENT_LINE/\\$d\\((.*)\\,\\s*\"(.*)\"\\,\\s*\"(.*)\"\\)r/$d(\"p\", \"$3\", \"$2\")/}"
     ],
     "description": "reverse draft process from current line"
+  },
+  "multi line note": {
+    "prefix": "n",
+    "body": [
+      "note as XX",
+      "",
+      "end note",
+      ""
+    ],
+    "description": "multi line note"
   }
 }
