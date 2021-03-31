@@ -5,7 +5,7 @@
       "```puml",
       "!include ./include/pfd_tool.pu",
       "",
-      "\\$d(\"process\", \"in1,in2\", \"out\")",
+      "\\$d(\"out\", \"in1,in2\", \"process\")",
       "```"
     ],
     "description": "PFD template"
@@ -13,14 +13,14 @@
   "draft process": {
     "prefix": "d",
     "body": [
-      "\\$d(\"p\", \"in\", \"out\")"
+      "\\$d(\"out\", \"in\", \"p\")"
     ],
     "description": "draft process"
   },
   "draft process from clipboard": {
     "prefix": "c",
     "body": [
-      "\\$d(\"p\", \"$CLIPBOARD\", \"$CLIPBOARD\")"
+      "\\$d(\"$CLIPBOARD\", \"$CLIPBOARD\", \"p\")"
     ],
     "description": "draft process from clipboard"
   },
@@ -28,7 +28,7 @@
     "prefix": "r",
     "body": [
       "",
-      "${TM_CURRENT_LINE/\\$d\\((.*)\\,\\s*\"(.*)\"\\,\\s*\"(.*)\"\\)r/$d(\"p\", \"$3\", \"$2\")/}"
+      "${TM_CURRENT_LINE/\\$d\\(\"(.*)\"\\,\\s*\"(.*)\"\\,\\s*\"(.*)\"\\)r/$d(\"$2\", \"$1\", \"p\")/}"
     ],
     "description": "reverse draft process from current line"
   },

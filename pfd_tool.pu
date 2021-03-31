@@ -6,20 +6,20 @@ skinparam agent {
 
 ' d
 ' Procedure for PFD process in/out with draft mode
-' [in] $process Specify process
-' [in] $inputs  Process inputs. It should be written as string with "," delimiter.
 ' [in] $outputs Process outputs. It should be written as string with "," delimiter.
-!procedure $d($process, $inputs, $outputs)
+' [in] $inputs  Process inputs. It should be written as string with "," delimiter.
+' [in] $process Specify process
+!procedure $d($outputs, $inputs, $process)
   $process_in($process, $inputs, "true")
   $process_out($process, $outputs, "true")
 !endprocedure
 
 ' p
 ' Procedure for PFD process in/out with normal mode
-' [in] $process Specify process
-' [in] $inputs  Process inputs. It should be written as string with "," delimiter.
 ' [in] $outputs Process outputs. It should be written as string with "," delimiter.
-!procedure $p($process, $inputs, $outputs)
+' [in] $inputs  Process inputs. It should be written as string with "," delimiter.
+' [in] $process Specify process
+!procedure $p($outputs, $inputs, $process)
   $process_in($process, $inputs)
   $process_out($process, $outputs)
 !endprocedure
