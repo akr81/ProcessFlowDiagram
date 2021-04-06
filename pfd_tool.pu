@@ -80,9 +80,9 @@ skinparam agent {
   !endif
 
   ' Repeat by ","
-  !while (%strpos($inout, ",") > 0)
+  !while ($minpos($inout) > 0)
     ' Separate string by ","
-    !$sub = %substr($inout, 0, %strpos($inout, ","))
+    !$sub = %substr($inout, 0, $minpos($inout))
 
     ' Add agent type model as input
     !if ($draft != "")
@@ -96,7 +96,7 @@ skinparam agent {
     !endif
 
     ' Update $inout
-    !$inout = %substr($inout, %strpos($inout, ",") + 1)
+    !$inout = %substr($inout, $minpos($inout) + 1)
   !endwhile
 
   !if ($draft != "")
@@ -110,5 +110,31 @@ skinparam agent {
     $process --> $inout
   !endif
 !endprocedure
+
+
+' minpos function
+' Return smaller position of delimiter
+' [in] string
+!function $minpos($string)
+  ' delimiter
+  !$len_to_comma = %strpos($string, ",")
+  !$len_to_space = %strpos($string, " ")
+
+  ' Comparing variable and negative value does not work well.
+  !if ($len_to_comma > 0) && ($len_to_space > 0)
+    !if ($len_to_comma > $len_to_space)
+      !$return = $len_to_space
+    !else
+      !$return = $len_to_comma
+    !endif
+  !elseif ($len_to_comma > 0)
+    !$return = $len_to_comma
+  !elseif ($len_to_space > 0)
+    !$return = $len_to_space
+  !else
+    !$return = $len_to_space
+  !endif
+  !return $return
+!endfunction
 
 @enduml
