@@ -76,7 +76,7 @@ skinparam agent {
 !procedure $process_common($process, $inout, $mode, $draft="")
   ' Add usecase type model as process
   !if ($draft != "")
-    usecase $process
+    usecase "$process" as $replace($process)
   !endif
 
   ' Repeat by ","
@@ -86,13 +86,13 @@ skinparam agent {
 
     ' Add agent type model as input
     !if ($draft != "")
-      agent $sub
+      agent "$sub" as $replace($sub)
     !endif
     ' Decide connection direction
     !if ($mode == "i")
-      $sub --> $process
+      $replace($sub) --> $replace($process)
     !else
-      $process --> $sub
+      $replace($process) --> $replace($sub)
     !endif
 
     ' Update $inout
@@ -100,14 +100,14 @@ skinparam agent {
   !endwhile
 
   !if ($draft != "")
-    agent $inout
+    agent "$inout" as $replace($inout)
   !endif
 
   ' last element
   !if ($mode == "i")
-    $inout --> $process
+    $replace($inout) --> $replace($process)
   !else
-    $process --> $inout
+    $replace($process) --> $replace($inout)
   !endif
 !endprocedure
 
@@ -135,6 +135,27 @@ skinparam agent {
     !$return = $len_to_space
   !endif
   !return $return
+!endfunction
+
+
+' replace
+' Replace symbol character to "_"
+' [in] string
+!function $replace($string)
+  !local $index = 0
+  !local $ret_str = ""
+  !while $index != %strlen($string)
+    !local $sub = %substr($string, $index, 1)
+
+    ' replace symbol to "_"
+    !if %strpos("!?#/-()^！？＃・－～（）＾＿￥", $sub) >= 0
+      !local $sub = "_"
+    !endif
+
+    !$ret_str = $ret_str + $sub
+    !$index = $index + 1
+  !endwhile
+  !return $ret_str
 !endfunction
 
 @enduml
