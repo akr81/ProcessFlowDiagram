@@ -3,6 +3,10 @@ skinparam agent {
     backgroundcolor #white
     bordercolor #black
 }
+skinparam cloud {
+    backgroundcolor #white
+    bordercolor #black
+}
 
 ' d
 ' Procedure for PFD process in/out with draft mode
@@ -86,7 +90,13 @@ skinparam agent {
 
     ' Add agent type model as input
     !if ($draft != "")
-      agent "$sub" as $replace($sub)
+      !if ($is_cloud($sub) == %true())
+        ' remove prefix
+        !$sub = %substr($sub, 2, %strlen($sub))
+        cloud "$sub" as $replace($sub)
+      !else
+        agent "$sub" as $replace($sub)
+      !endif
     !endif
     ' Decide connection direction
     !if ($mode == "i")
@@ -100,7 +110,13 @@ skinparam agent {
   !endwhile
 
   !if ($draft != "")
-    agent "$inout" as $replace($inout)
+    !if ($is_cloud($inout) == %true())
+      ' remove prefix
+      !$inout = %substr($inout, 2, %strlen($inout))
+      cloud "$inout" as $replace($inout)
+    !else
+      agent "$inout" as $replace($inout)
+    !endif
   !endif
 
   ' last element
@@ -156,6 +172,17 @@ skinparam agent {
     !$index = $index + 1
   !endwhile
   !return $ret_str
+!endfunction
+
+' is_cloud
+' Judge specified string meet the condition of cloud element
+' [in] string
+!function $is_cloud($string)
+  !if %strpos($string, "c:") == 0
+    !return %true()
+  !else
+    !return %false()
+  !endif
 !endfunction
 
 @enduml
