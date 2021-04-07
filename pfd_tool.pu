@@ -148,7 +148,7 @@ skinparam agent {
     !local $sub = %substr($string, $index, 1)
 
     ' replace symbol to "_"
-    !if %strpos("!?#/-()^！？＃・－～（）＾＿￥", $sub) >= 0
+    !if %strpos("!?#/-()^:！？＃・－～（）＾＿￥：", $sub) >= 0
       !local $sub = "_"
     !endif
 
