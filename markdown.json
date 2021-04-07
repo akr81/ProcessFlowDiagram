@@ -5,7 +5,7 @@
       "```puml",
       "!include ./include/pfd_tool.pu",
       "",
-      "\\$d(\"out\", \"in1,in2\", \"process\")",
+      "\\$d(\"out\", \"in1,in2 c:in3\", \"process\")",
       "```"
     ],
     "description": "PFD template"
