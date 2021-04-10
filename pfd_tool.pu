@@ -1,4 +1,5 @@
 @startuml
+' Color setting
 skinparam agent {
     backgroundcolor #white
     bordercolor #black
@@ -7,6 +8,12 @@ skinparam cloud {
     backgroundcolor #white
     bordercolor #black
 }
+
+' Separator setting
+' If you familiar with English, It might be better not to use SPACE as delimiter.
+' 1: Use space as delimiter (default)
+' 0: Not use space as delimiter (comma only)
+!$space_delimiter = 1
 
 ' d
 ' Procedure for PFD process in/out with draft mode
@@ -134,7 +141,12 @@ skinparam cloud {
 !function $minpos($string)
   ' delimiter
   !local $len_to_comma = %strpos($string, ",")
-  !local $len_to_space = %strpos($string, " ")
+  !if ($space_delimiter == 1)
+    !local $len_to_space = %strpos($string, " ")
+  !else
+    ' Not use space as delimiter
+    !local $len_to_space = 0
+  !endif
 
   ' Comparing variable and negative value does not work well.
   !if ($len_to_comma > 0) && ($len_to_space > 0)
@@ -155,7 +167,8 @@ skinparam cloud {
 
 
 ' replace
-' Replace symbol or other special string to "_"
+' Replace symbol or other special string to ""
+' Because alias should not include symbol etc.
 ' [in] string
 ' [ret] replaced string
 !function $replace($string)
@@ -165,7 +178,7 @@ skinparam cloud {
 !endfunction
 
 ' replace_symbol
-' Replace symbol character to "_"
+' Replace symbol character to ""
 ' [in] string
 ' [ret] replaced string
 !function $replace_symbol($string)
@@ -174,9 +187,9 @@ skinparam cloud {
   !while $index != %strlen($string)
     !local $sub = %substr($string, $index, 1)
 
-    ' replace symbol to "_"
-    !if %strpos("!?#/-()^:！？＃・－～（）＾＿￥：", $sub) >= 0
-      !local $sub = "_"
+    ' replace symbol to ""
+    !if %strpos("!?#/-()^: ！？＃・－～（）＾＿￥：", $sub) >= 0
+      !local $sub = ""
     !endif
 
     !$ret_str = $ret_str + $sub
@@ -186,7 +199,7 @@ skinparam cloud {
 !endfunction
 
 ' replace_newline
-' Replace "\n" to "_"
+' Replace "\n" to ""
 ' [in] string
 ' [ret] replaced string
 !function $replace_newline($string)
@@ -195,12 +208,12 @@ skinparam cloud {
   !while $index < %strlen($string)
     ' Get two chars as unit for "\n" check
     !local $sub = %substr($string, $index, 2)
-    ' replace \n to "_"
+    ' replace \n to ""
     !if %strpos("\n", $sub) >= 0
-      !local $sub = "_"
+      !local $sub = ""
     !endif
 
-    !if ($sub == "_")
+    !if ($sub == "")
       ' Replaced
       !$ret_str = $ret_str + $sub
       ' Due to 2 char replaced, increment index 2
