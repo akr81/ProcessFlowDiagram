@@ -86,13 +86,13 @@ skinparam cloud {
   ' Repeat by ","
   !while ($minpos($inout) > 0)
     ' Separate string by ","
-    !$sub = %substr($inout, 0, $minpos($inout))
+    !local $sub = %substr($inout, 0, $minpos($inout))
 
     ' Add agent type model as input
     !if ($draft != "")
       !if ($is_cloud($sub) == %true())
         ' remove prefix
-        !$sub = %substr($sub, 2, %strlen($sub))
+        !local $sub = %substr($sub, 2, %strlen($sub))
         cloud "$sub" as $replace($sub)
       !else
         agent "$sub" as $replace($sub)
@@ -133,24 +133,24 @@ skinparam cloud {
 ' [in] string
 !function $minpos($string)
   ' delimiter
-  !$len_to_comma = %strpos($string, ",")
-  !$len_to_space = %strpos($string, " ")
+  !local $len_to_comma = %strpos($string, ",")
+  !local $len_to_space = %strpos($string, " ")
 
   ' Comparing variable and negative value does not work well.
   !if ($len_to_comma > 0) && ($len_to_space > 0)
     !if ($len_to_comma > $len_to_space)
-      !$return = $len_to_space
+      !local $retval = $len_to_space
     !else
-      !$return = $len_to_comma
+      !local $retval = $len_to_comma
     !endif
   !elseif ($len_to_comma > 0)
-    !$return = $len_to_comma
+    !local $retval = $len_to_comma
   !elseif ($len_to_space > 0)
-    !$return = $len_to_space
+    !local $retval = $len_to_space
   !else
-    !$return = $len_to_space
+    !local $retval = $len_to_space
   !endif
-  !return $return
+  !return $retval
 !endfunction
 
 
@@ -159,8 +159,8 @@ skinparam cloud {
 ' [in] string
 ' [ret] replaced string
 !function $replace($string)
-  !$string = $replace_newline($string)
-  !$string = $replace_symbol($string)
+  !local $string = $replace_newline($string)
+  !local $string = $replace_symbol($string)
   !return $string
 !endfunction
 
