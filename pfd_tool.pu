@@ -155,9 +155,20 @@ skinparam cloud {
 
 
 ' replace
+' Replace symbol or other special string to "_"
+' [in] string
+' [ret] replaced string
+!function $replace($string)
+  !$string = $replace_newline($string)
+  !$string = $replace_symbol($string)
+  !return $string
+!endfunction
+
+' replace_symbol
 ' Replace symbol character to "_"
 ' [in] string
-!function $replace($string)
+' [ret] replaced string
+!function $replace_symbol($string)
   !local $index = 0
   !local $ret_str = ""
   !while $index != %strlen($string)
@@ -174,9 +185,41 @@ skinparam cloud {
   !return $ret_str
 !endfunction
 
+' replace_newline
+' Replace "\n" to "_"
+' [in] string
+' [ret] replaced string
+!function $replace_newline($string)
+  !local $index = 0
+  !local $ret_str = ""
+  !while $index < %strlen($string)
+    ' Get two chars as unit for "\n" check
+    !local $sub = %substr($string, $index, 2)
+    ' replace \n to "_"
+    !if %strpos("\n", $sub) >= 0
+      !local $sub = "_"
+    !endif
+
+    !if ($sub == "_")
+      ' Replaced
+      !$ret_str = $ret_str + $sub
+      ' Due to 2 char replaced, increment index 2
+      !$index = $index + 2
+    !else
+      ' Not replaced
+      ' First char is confirmed to use
+      !$ret_str = $ret_str + %substr($sub, 0, 1)
+      !$index = $index + 1
+    !endif
+  !endwhile
+  !return $ret_str
+!endfunction
+
+
 ' is_cloud
 ' Judge specified string meet the condition of cloud element
 ' [in] string
+' [ret] true: string is cloud element, false: string is NOT cloud element
 !function $is_cloud($string)
   !if %strpos($string, "c:") == 0
     !return %true()
