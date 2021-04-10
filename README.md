@@ -39,7 +39,7 @@ PFDを描くにあたって必要となる、`入力`と`プロセス`、`プロ
 
 |スニペット|使用例|説明|結果|
 |---|---|---|---|
-|PFD template|pfd|Markdown Preview EnhancedのPlantUMLコードブロックを、<br>`$d`プロシージャとともに出力します。<br>また、上述の区切り文字設定も合わせて出力します。|![](./image/2021-03-29-23-09-35.png)|
+|PFD template|pfd|Markdown Preview EnhancedのPlantUMLコードブロックを、<br>`$d`プロシージャとともに出力します。<br>また、上述の区切り文字設定も合わせて出力します。|![](./image/2021-04-10-10-21-26.png)|
 |draft process|d|`$d`プロシージャを出力します。|![](./image/2021-03-29-23-11-30.png)|
 |draft process from clipboard|c|クリップボードの内容が`in`, `out`に入った`$d`プロシージャを出力します。|![](./image/2021-03-29-23-13-21.png)|
 |reverse draft process from current line|r|カーソルがある行の`$d`プロシージャについて、<br>`in`と`out`を入れ替えた`$d`プロシージャを出力します。<br>行末で使用しないと正しく動作しません。|![](./image/2021-03-29-23-17-22.png)|
