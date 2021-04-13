@@ -4,7 +4,7 @@
     "body": [
       "```puml",
       "!include ./include/pfd_tool.pu",
-      "!$space_delimiter = 1",
+      "!\\$space_delimiter = 1",
       "",
       "\\$d(\"out\", \"in1,in2 c:in3\", \"process\")",
       "```"
