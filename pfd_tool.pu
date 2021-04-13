@@ -15,6 +15,11 @@ skinparam cloud {
 ' 0: Not use space as delimiter (comma only)
 !$space_delimiter = 1
 
+' Invalid constant
+' %strpos() returns -1 if not matched.
+' But this value seems not comparable value.
+!$invalid_value = 65535
+
 ' d
 ' Procedure for PFD process in/out with draft mode
 ' [in] $outputs Process outputs. It should be written as string with "," delimiter.
@@ -91,7 +96,7 @@ skinparam cloud {
   !endif
 
   ' Repeat by ","
-  !while ($minpos($inout) > 0)
+  !while (%strlen($inout) >= $minpos($inout))
     ' Separate string by ","
     !local $sub = %substr($inout, 0, $minpos($inout))
 
@@ -140,27 +145,36 @@ skinparam cloud {
 ' [in] string
 !function $minpos($string)
   ' delimiter
-  !local $len_to_comma = %strpos($string, ",")
-  !if ($space_delimiter == 1)
+  !if %strpos($string, ",") >= 0
+    !local $len_to_comma = %strpos($string, ",")
+  !else
+    !local $len_to_comma = $invalid_value
+  !endif
+  !if %strpos($string, " ") >= 0
     !local $len_to_space = %strpos($string, " ")
   !else
+    !local $len_to_space = $invalid_value
+  !endif
+
+  !if ($space_delimiter != 1)
     ' Not use space as delimiter
-    !local $len_to_space = 0
+    !local $len_to_space = $invalid_value
   !endif
 
   ' Comparing variable and negative value does not work well.
-  !if ($len_to_comma > 0) && ($len_to_space > 0)
+  !if ($len_to_comma == $invalid_value) && ($len_to_space == $invalid_value)
+    !local $retval = $invalid_value
+  !elseif ($len_to_comma == $invalid_value)
+    !local $retval = $len_to_space
+  !elseif ($len_to_space == $invalid_value)
+    !local $retval = $len_to_comma
+  !else
+    ' Both values are not invalid
     !if ($len_to_comma > $len_to_space)
       !local $retval = $len_to_space
     !else
       !local $retval = $len_to_comma
     !endif
-  !elseif ($len_to_comma > 0)
-    !local $retval = $len_to_comma
-  !elseif ($len_to_space > 0)
-    !local $retval = $len_to_space
-  !else
-    !local $retval = $len_to_space
   !endif
   !return $retval
 !endfunction
