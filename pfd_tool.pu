@@ -238,7 +238,7 @@ skinparam cloud {
 
     ' replace symbol to ""
     !if %strpos("!?#/-()^: ！？＃・－～（）＾＿￥：", $sub) >= 0
-      !local $sub = ""
+      !local $sub = "_"
     !endif
 
     !$ret_str = $ret_str + $sub
