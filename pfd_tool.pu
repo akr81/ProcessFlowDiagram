@@ -139,6 +139,41 @@ skinparam cloud {
   !endif
 !endprocedure
 
+' c
+' Overwrite deliverable element with specified color.
+' [in] $color   Specify color
+' [in] $inout   Process inputs/outputs. It should be written as string with "," delimiter.
+!procedure $c($color, $inout)
+  ' Repeat by ","
+  !while (%strlen($inout) >= $minpos($inout))
+    ' Separate string by ","
+    !local $sub = %substr($inout, 0, $minpos($inout))
+
+    ' Add agent type model as input
+    !if ($draft != "")
+      !if ($is_cloud($sub) == %true())
+        ' remove prefix
+        !local $sub = %substr($sub, 2, %strlen($sub))
+        cloud "$sub" as $replace($sub) $color
+      !else
+        agent "$sub" as $replace($sub) $color
+      !endif
+    !endif
+
+    ' Update $inout
+    !$inout = %substr($inout, $minpos($inout) + 1)
+  !endwhile
+
+  !if ($draft != "")
+    !if ($is_cloud($inout) == %true())
+      ' remove prefix
+      !$inout = %substr($inout, 2, %strlen($inout))
+      cloud "$inout" as $replace($inout) $color
+    !else
+      agent "$inout" as $replace($inout) $color
+    !endif
+  !endif
+!endprocedure
 
 ' minpos function
 ' Return smaller position of delimiter

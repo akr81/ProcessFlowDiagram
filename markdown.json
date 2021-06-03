@@ -42,5 +42,12 @@
       ""
     ],
     "description": "multi line note"
+  },
+  "define color": {
+    "prefix": "c",
+    "body": [
+      "\\$c(\"#pink\", \"in1\")"
+    ],
+    "description": "define color"
   }
 }
