@@ -7,6 +7,8 @@
       "!\\$space_delimiter = 1",
       "",
       "\\$d(\"out\", \"in1,in2 c:in3\", \"process\")",
+      "\\$c(\"#pink\", \"in1\")",
+      "\\$cp(\"#skyblue\", \"process\")",
       "```"
     ],
     "description": "PFD template"
@@ -33,21 +35,36 @@
     ],
     "description": "reverse draft process from current line"
   },
+  "replace procedure from clipboard": {
+    "prefix": "r",
+    "body": [
+      "\\$replace(\"$CLIPBOARD\")"
+    ],
+    "description": "replace procedure from clipboard"
+  },
   "multi line note": {
     "prefix": "n",
     "body": [
       "note as XX",
       "",
       "end note",
+      "XX .. XX",
       ""
     ],
     "description": "multi line note"
   },
-  "define color": {
+  "define color for deliverables": {
     "prefix": "c",
     "body": [
       "\\$c(\"#pink\", \"in1\")"
     ],
-    "description": "define color"
+    "description": "define color for deliverables"
+  },
+  "define color for process": {
+    "prefix": "c",
+    "body": [
+      "\\$cp(\"#pink\", \"process\")"
+    ],
+    "description": "define color for process"
   }
 }
