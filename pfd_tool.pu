@@ -175,6 +175,30 @@ skinparam cloud {
   !endif
 !endprocedure
 
+' cp
+' Overwrite process element with specified color.
+' [in] $color   Specify color
+' [in] $inout   Processes. It should be written as string with "," delimiter.
+!procedure $cp($color, $inout)
+  ' Repeat by ","
+  !while (%strlen($inout) >= $minpos($inout))
+    ' Separate string by ","
+    !local $sub = %substr($inout, 0, $minpos($inout))
+
+    ' Add usecase type model as input
+    !if ($draft != "")
+      usecase "$sub" as $replace($sub) $color
+    !endif
+
+    ' Update $inout
+    !$inout = %substr($inout, $minpos($inout) + 1)
+  !endwhile
+
+  !if ($draft != "")
+    usecase "$inout" as $replace($inout) $color
+  !endif
+!endprocedure
+
 ' minpos function
 ' Return smaller position of delimiter
 ' [in] string
