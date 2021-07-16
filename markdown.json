@@ -45,13 +45,24 @@
   "multi line note": {
     "prefix": "n",
     "body": [
-      "note as XX",
+      "note as n$CURRENT_MINUTE$CURRENT_SECOND",
       "",
       "end note",
-      "XX .. XX",
+      "n$CURRENT_MINUTE$CURRENT_SECOND .. YOUR_ALIAS",
       ""
     ],
     "description": "multi line note"
+  },
+  "multi line note to clipboard": {
+    "prefix": "n",
+    "body": [
+      "note as n$CURRENT_MINUTE$CURRENT_SECOND",
+      "",
+      "end note",
+      "n$CURRENT_MINUTE$CURRENT_SECOND .. \\$replace(\"$CLIPBOARD\")",
+      ""
+    ],
+    "description": "multi line note to clipboard"
   },
   "define color for deliverables": {
     "prefix": "c",
