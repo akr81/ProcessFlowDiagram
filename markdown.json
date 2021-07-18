@@ -54,7 +54,7 @@
     "description": "multi line note"
   },
   "multi line note to clipboard": {
-    "prefix": "n",
+    "prefix": "nc",
     "body": [
       "note as n$CURRENT_MINUTE$CURRENT_SECOND",
       "",
@@ -72,7 +72,7 @@
     "description": "define color for deliverables"
   },
   "define color for process": {
-    "prefix": "c",
+    "prefix": "cp",
     "body": [
       "\\$cp(\"#pink\", \"process\")"
     ],

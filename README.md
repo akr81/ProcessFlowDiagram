@@ -18,6 +18,7 @@ PFDを描くにあたって必要となる、`入力`と`プロセス`、`プロ
 |$p(outputs, inputs, process)|$p("out", "in1,in2", "process")|事前に定義済みの要素を使ってプロセスを描画します。<br>```in1 --> process```<br>```in2 --> process```<br>```process --> out```<br>と同じです。事前に定義がない場合は、表示が異なる場合があります。|![p_sample](./image/2021-03-29-22-43-13.png)|
 |$d(outputs, inputs, process)|$d("out", "in1 in2", "process")|プロシージャ内で要素を定義しながらプロセスを描画します。<br>```agent "in1" as in1```<br>```agent "in2" as in2```<br>```usecase "process" as process```<br>```in1 --> process```<br>```in2 --> process```<br>```process --> out```<br>と同じです。<br>`inputs, outputs`の要素を`c:`で始めた場合、その要素は雲形(`cloud`として定義)になります。<br>また、事前に定義がある場合は、エラーとなります。|![p_sample](./image/2021-03-29-22-43-13.png)|
 |$c(color, inouts)|$c("#pink", "in1 in2")|それまでに定義された入出力に指定された色を付与します。<br>```agent "in1" as in1 #pink```<br>```agent "in2" as in2 #pink```<br>と同じです。<br>`$c`は`$d`による要素定義の後に使用するようにしてください。|![p_sample](./image/2021-06-03-19-52-32.png)|
+|$cp(color, process)|$c("#skyblue", "process")|それまでに定義されたプロセスに指定された色を付与します。<br>```usecase "process" as process #skyblue```と同じです。<br>`$cp`は`$d`による要素定義の後に使用するようにしてください。|![p_sample](./image/2021-07-18-14-51-41.png)|
 
 ### 設定項目
 デフォルトでは、入出力の区切り文字は`,`と` `に設定されています。  
@@ -42,10 +43,12 @@ PFDを描くにあたって必要となる、`入力`と`プロセス`、`プロ
 |---|---|---|
 |PFD template|pfd|Markdown Preview EnhancedのPlantUMLコードブロックを、<br>`$d`プロシージャとともに出力します。<br>また、上述の区切り文字設定も合わせて出力します。|
 |draft process|d|`$d`プロシージャを出力します。|
-|define color|c|`$c`プロシージャを出力します。|
 |draft process from clipboard|c|クリップボードの内容が`in`, `out`に入った`$d`プロシージャを出力します。|
 |reverse draft process from current line|r|カーソルがある行の`$d`プロシージャについて、<br>`in`と`out`を入れ替えた`$d`プロシージャを出力します。<br>行末で使用しないと正しく動作しません。|
-|multi line note|n|複数行ノートのテンプレートを出力します。|
+|define color for deliverables|c|`$c`プロシージャを出力します。|
+|define color for process|cp|`$cp`プロシージャを出力します。|
+|multi line note|n|複数行ノートのテンプレートを出力します。<br>リンク先は適切に設定してください。|
+|multi line note to clipboard|nc|複数行ノートのテンプレートを出力します。<br>リンク先はクリップボードの要素になります。|
 
 
 ## 使用イメージ
