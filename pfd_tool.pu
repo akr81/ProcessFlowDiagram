@@ -9,7 +9,11 @@ skinparam cloud {
     bordercolor #black
 }
 
-' Separator setting
+' Default delimiter
+' If you want to use other than "," as separator, please modify or overwrite this.
+!$default_delimiter = ","
+
+' Delimiter setting
 ' If you familiar with English, It might be better not to use SPACE as delimiter.
 ' 1: Use space as delimiter (default)
 ' 0: Not use space as delimiter (comma only)
@@ -204,8 +208,8 @@ skinparam cloud {
 ' [in] string
 !function $minpos($string)
   ' delimiter
-  !if %strpos($string, ",") >= 0
-    !local $len_to_comma = %strpos($string, ",")
+  !if %strpos($string, $default_delimiter) >= 0
+    !local $len_to_comma = %strpos($string, $default_delimiter)
   !else
     !local $len_to_comma = $invalid_value
   !endif
