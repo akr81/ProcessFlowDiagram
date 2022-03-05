@@ -16,14 +16,14 @@
   "draft process": {
     "prefix": "d",
     "body": [
-      "\\$d(\"out\", \"in\", \"p\")"
+      "\\$d(\"out$1\", \"in$2\", \"process$3\")"
     ],
     "description": "draft process"
   },
   "draft process from clipboard": {
     "prefix": "c",
     "body": [
-      "\\$d(\"$CLIPBOARD\", \"$CLIPBOARD\", \"p\")"
+      "\\$d(\"$CLIPBOARD$1\", \"$CLIPBOARD$2\", \"process$3\")"
     ],
     "description": "draft process from clipboard"
   },
