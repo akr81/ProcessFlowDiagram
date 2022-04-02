@@ -77,5 +77,31 @@
       "\\$cp(\"#pink\", \"process\")"
     ],
     "description": "define color for process"
+  },
+  "CRT template": {
+    "prefix": "crt",
+    "body": [
+      "```puml",
+      "!include ./include/pfd_tool.pu",
+      "!\\$space_delimiter = 1",
+      "",
+      "\\$crt( \\",
+      "    \"UDE\", \\",
+      "    \"cause1,cause2 cause3\" \\",
+      ")",
+      "\\$c(\"#pink\", \"UDE\")",
+      "```"
+    ],
+    "description": "CRT template"
+  },
+  "cause and result": {
+    "prefix": "cause",
+    "body": [
+      "\\$crt( \\",
+      "    \"UDE\", \\",
+      "    \"cause1,cause2 cause3\" \\",
+      ")"
+    ],
+    "description": "Cause and Result"
   }
 }
