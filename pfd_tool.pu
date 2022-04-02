@@ -325,4 +325,40 @@ skinparam usecase {
   !endif
 !endfunction
 
+
+' CRT(Current Reality Tree)
+' [in] $result    Specify result
+' [in] $cause     Causes of result. It should be written as string with "," delimiter.
+' [in] $draft     If specified, make models (optional, default as true)
+!procedure $crt($result, $cause, $draft="true")
+  ' Add usecase type model as process
+  !if ($draft != "")
+    agent "$result" as $replace($result)
+  !endif
+
+  ' Repeat by ","
+  !while (%strlen($cause) >= $minpos($cause))
+    ' Separate string by ","
+    !local $sub = %substr($cause, 0, $minpos($cause))
+
+    ' Add agent type model as input
+    !if ($draft != "")
+      agent "$sub" as $replace($sub)
+    !endif
+
+    ' Decide connection direction
+    $replace($result) <-- $replace($sub)
+
+    ' Update $inout
+    !$cause = %substr($cause, $minpos($cause) + 1)
+  !endwhile
+
+  !if ($draft != "")
+    agent "$cause" as $replace($cause)
+  !endif
+
+  ' last element
+  $replace($result) <-- $replace($cause)
+!endprocedure
+
 @enduml
