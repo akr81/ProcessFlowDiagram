@@ -3,10 +3,17 @@
 skinparam agent {
     backgroundcolor #white
     bordercolor #black
+    ArrowColor #black
 }
 skinparam cloud {
     backgroundcolor #white
     bordercolor #black
+    ArrowColor #black
+}
+skinparam usecase {
+    backgroundcolor #white
+    bordercolor #black
+    ArrowColor #black
 }
 
 ' Default delimiter
