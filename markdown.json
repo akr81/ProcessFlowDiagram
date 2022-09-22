@@ -5,6 +5,7 @@
       "```puml",
       "!include ./include/pfd_tool.pu",
       "!\\$space_delimiter = 1",
+      "left to right direction",
       "",
       "\\$d( \\",
       "    \"out\", \\",
@@ -20,14 +21,22 @@
   "draft process": {
     "prefix": "d",
     "body": [
-      "\\$d(\"out$1\", \"in$2\", \"process$3\")"
+      "\\$d( \\",
+      "    \"out\", \\",
+      "    \"in\", \\",
+      "    \"process\" \\",
+      ")"
     ],
     "description": "draft process"
   },
   "draft process from clipboard": {
     "prefix": "c",
     "body": [
-      "\\$d(\"$CLIPBOARD$1\", \"$CLIPBOARD$2\", \"process$3\")"
+      "\\$d( \\",
+      "    \"$CLIPBOARD\", \\",
+      "    \"$CLIPBOARD\", \\",
+      "    \"Process${CURRENT_MINUTE}${CURRENT_SECOND}\" \\",
+      ")"
     ],
     "description": "draft process from clipboard"
   },
