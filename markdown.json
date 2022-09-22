@@ -6,6 +6,8 @@
       "!include ./include/pfd_tool.pu",
       "!\\$space_delimiter = 1",
       "left to right direction",
+      "skinparam linetype polyline",
+      "skinparam linetype ortho",
       "",
       "\\$d( \\",
       "    \"out\", \\",
