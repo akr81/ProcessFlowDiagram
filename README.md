@@ -44,7 +44,6 @@ PFDを描くにあたって必要となる、`入力`と`プロセス`、`プロ
 |PFD template|pfd|Markdown Preview EnhancedのPlantUMLコードブロックを、<br>`$d`プロシージャとともに出力します。<br>また、上述の区切り文字設定も合わせて出力します。|
 |draft process|d|`$d`プロシージャを出力します。|
 |draft process from clipboard|c|クリップボードの内容が`in`, `out`に入った`$d`プロシージャを出力します。|
-|reverse draft process from current line|r|カーソルがある行の`$d`プロシージャについて、<br>`in`と`out`を入れ替えた`$d`プロシージャを出力します。<br>行末で使用しないと正しく動作しません。|
 |define color for deliverables|c|`$c`プロシージャを出力します。|
 |define color for process|cp|`$cp`プロシージャを出力します。|
 |multi line note|n|複数行ノートのテンプレートを出力します。<br>リンク先は適切に設定してください。|

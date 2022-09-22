@@ -42,14 +42,6 @@
     ],
     "description": "draft process from clipboard"
   },
-  "reverse draft process from current line": {
-    "prefix": "r",
-    "body": [
-      "",
-      "${TM_CURRENT_LINE/\\$d\\(\"(.*)\"\\,\\s*\"(.*)\"\\,\\s*\"(.*)\"\\)r/$d(\"$2\", \"$1\", \"p\")/}"
-    ],
-    "description": "reverse draft process from current line"
-  },
   "replace procedure from clipboard": {
     "prefix": "r",
     "body": [
