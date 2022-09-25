@@ -10,9 +10,9 @@
       "skinparam linetype ortho",
       "",
       "\\$d( \\",
-      "    \"out\", \\",
-      "    \"in1,in2 c:in3\", \\",
-      "    \"process\" \\",
+      "    \"$1out\", \\",
+      "    \"$2in1,in2 c:in3\", \\",
+      "    \"$3process\" \\",
       ")",
       "\\$c(\"#pink\", \"in1\")",
       "\\$cp(\"#skyblue\", \"process\")",
@@ -24,9 +24,9 @@
     "prefix": "d",
     "body": [
       "\\$d( \\",
-      "    \"out\", \\",
-      "    \"in\", \\",
-      "    \"process\" \\",
+      "    \"$1out\", \\",
+      "    \"$2in\", \\",
+      "    \"$3process\" \\",
       ")"
     ],
     "description": "draft process"
@@ -35,9 +35,9 @@
     "prefix": "c",
     "body": [
       "\\$d( \\",
-      "    \"$CLIPBOARD\", \\",
-      "    \"$CLIPBOARD\", \\",
-      "    \"Process${CURRENT_MINUTE}${CURRENT_SECOND}\" \\",
+      "    \"$1$CLIPBOARD\", \\",
+      "    \"$2$CLIPBOARD\", \\",
+      "    \"$3Process${CURRENT_MINUTE}${CURRENT_SECOND}\" \\",
       ")"
     ],
     "description": "draft process from clipboard"
@@ -53,7 +53,7 @@
     "prefix": "n",
     "body": [
       "note as n$CURRENT_MINUTE$CURRENT_SECOND",
-      "",
+      "$1",
       "end note",
       "n$CURRENT_MINUTE$CURRENT_SECOND .. YOUR_ALIAS",
       ""
@@ -64,7 +64,7 @@
     "prefix": "nc",
     "body": [
       "note as n$CURRENT_MINUTE$CURRENT_SECOND",
-      "",
+      "$1",
       "end note",
       "n$CURRENT_MINUTE$CURRENT_SECOND .. \\$replace(\"$CLIPBOARD\")",
       ""
@@ -93,8 +93,8 @@
       "!\\$space_delimiter = 1",
       "",
       "\\$crt( \\",
-      "    \"UDE\", \\",
-      "    \"cause1,cause2 cause3\" \\",
+      "    \"$1UDE\", \\",
+      "    \"$2cause1,cause2 cause3\" \\",
       ")",
       "\\$c(\"#pink\", \"UDE\")",
       "```"
@@ -105,8 +105,8 @@
     "prefix": "cause",
     "body": [
       "\\$crt( \\",
-      "    \"UDE\", \\",
-      "    \"cause1,cause2 cause3\" \\",
+      "    \"$1UDE\", \\",
+      "    \"$2cause1,cause2 cause3\" \\",
       ")"
     ],
     "description": "Cause and Result"
