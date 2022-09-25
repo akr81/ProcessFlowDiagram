@@ -110,5 +110,42 @@
       ")"
     ],
     "description": "Cause and Result"
+  },
+  "evaporating_cloud": {
+    "prefix": "cloud",
+    "body": [
+      "```puml",
+      "!include ./include/pfd_tool.pu",
+      "left to right direction",
+      "",
+      "\\$head(\"$1The mission\")",
+      "\\$left( \\",
+      "    \"$2Benefits of A\", \\",
+      "    \"$3Option A\" \\",
+      ")",
+      "\\$right( \\",
+      "    \"$4Benefits of B\", \\",
+      "    \"$5Option B\" \\",
+      ")",
+      "",
+      "note as left_note",
+      "pros",
+      "*",
+      "cons",
+      "*",
+      "end note",
+      "left_hand .. left_note",
+      "",
+      "note as right_note",
+      "pros",
+      "*",
+      "cons",
+      "*",
+      "end note",
+      "right_hand .. right_note",
+      "\\$connect()",
+      "```"
+    ],
+    "description": "Evaporating cloud"
   }
 }

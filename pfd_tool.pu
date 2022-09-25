@@ -15,6 +15,10 @@ skinparam usecase {
     bordercolor #black
     ArrowColor #black
 }
+skinparam note {
+    BackgroundColor White
+    BorderColor Black
+}
 
 ' Default delimiter
 ' If you want to use other than "," as separator, please modify or overwrite this.
@@ -359,6 +363,41 @@ skinparam usecase {
 
   ' last element
   $replace($result) <-- $replace($cause)
+!endprocedure
+
+' Evaporating cloud(head)
+' [in] $mission   The mission of the cloud
+!procedure $head($mission)
+  agent "$mission" as head
+!endprocedure
+
+' Evaporating cloud(shoulder-hand)
+' [in] $mission   The mission of the cloud
+!procedure $shoulder_hand($shoulder, $hand, $left_right)
+  agent "$shoulder" as $left_right##_shoulder
+  agent "$hand" as $left_right##_hand
+  head <-- $left_right##_shoulder
+  $left_right##_shoulder <-- $left_right##_hand
+!endprocedure
+
+' Evaporating cloud(right)
+' [in] $mission   The mission of the cloud
+!procedure $right($shoulder, $hand)
+  $shoulder_hand($shoulder, $hand, "right")
+!endprocedure
+
+' Evaporating cloud(left)
+' [in] $mission   The mission of the cloud
+!procedure $left($shoulder, $hand)
+  $shoulder_hand($shoulder, $hand, "left")
+!endprocedure
+
+' Evaporating cloud(connect)
+' [in] $mission   The mission of the cloud
+!procedure $connect()
+  left_hand <=> right_hand #red
+  left_shoulder <.. right_hand #Blue
+  right_shoulder <.. left_hand #Blue
 !endprocedure
 
 @enduml
