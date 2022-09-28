@@ -136,21 +136,23 @@ skinparam note {
     !$inout = %substr($inout, $minpos($inout) + 1)
   !endwhile
 
-  !if ($draft != "")
-    !if ($is_cloud($inout) == %true())
-      ' remove prefix
-      !$inout = %substr($inout, 2, %strlen($inout))
-      cloud "$inout" as $replace($inout)
-    !else
-      agent "$inout" as $replace($inout)
+  !if (%strlen($inout) != 0)
+    !if ($draft != "")
+      !if ($is_cloud($inout) == %true())
+        ' remove prefix
+        !$inout = %substr($inout, 2, %strlen($inout))
+        cloud "$inout" as $replace($inout)
+      !else
+        agent "$inout" as $replace($inout)
+      !endif
     !endif
-  !endif
 
-  ' last element
-  !if ($mode == "i")
-    $replace($inout) --> $replace($process)
-  !else
-    $replace($process) --> $replace($inout)
+    ' last element
+    !if ($mode == "i")
+      $replace($inout) --> $replace($process)
+    !else
+      $replace($process) --> $replace($inout)
+    !endif
   !endif
 !endprocedure
 
@@ -357,12 +359,14 @@ skinparam note {
     !$cause = %substr($cause, $minpos($cause) + 1)
   !endwhile
 
-  !if ($draft != "")
-    agent "$cause" as $replace($cause)
-  !endif
+  !if (%strlen($cause) != 0)
+    !if ($draft != "")
+      agent "$cause" as $replace($cause)
+    !endif
 
-  ' last element
-  $replace($result) <-- $replace($cause)
+    ' last element
+    $replace($result) <-- $replace($cause)
+  !endif
 !endprocedure
 
 ' Evaporating cloud(head)
