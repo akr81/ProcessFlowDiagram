@@ -106,7 +106,7 @@ skinparam note {
 ' [in] $draft     If specified, make models (optional)
 !procedure $process_common($process, $inout, $mode, $draft="")
   ' Add usecase type model as process
-  !if ($draft != "")
+  !if ($draft != "") && (%strlen($process) != 0)
     usecase "$process" as $replace($process)
   !endif
 
@@ -126,10 +126,12 @@ skinparam note {
       !endif
     !endif
     ' Decide connection direction
-    !if ($mode == "i")
-      $replace($sub) --> $replace($process)
-    !else
-      $replace($process) --> $replace($sub)
+    !if (%strlen($process) != 0)
+      !if ($mode == "i")
+        $replace($sub) --> $replace($process)
+      !else
+        $replace($process) --> $replace($sub)
+      !endif
     !endif
 
     ' Update $inout
@@ -148,10 +150,12 @@ skinparam note {
     !endif
 
     ' last element
-    !if ($mode == "i")
-      $replace($inout) --> $replace($process)
-    !else
-      $replace($process) --> $replace($inout)
+    !if (%strlen($process) != 0)
+      !if ($mode == "i")
+        $replace($inout) --> $replace($process)
+      !else
+        $replace($process) --> $replace($inout)
+      !endif
     !endif
   !endif
 !endprocedure
