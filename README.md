@@ -1,4 +1,6 @@
 # ProcessFlowDiagram tool
+[English](./README_EN.md)
+
 PlantUML + VSCodeでプロセスフロー図(PFD)を描くための
 - PlantUMLプロシージャ
 - VSCodeユーザスニペット
