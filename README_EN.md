@@ -14,8 +14,8 @@ Multiple `Inputs` and `Outputs` can be written by "," delimiter.
 
 |Procedure|Example|Explain|Result|
 |---|---|---|---|
-|$d(outputs, inputs, process)|$d("out", "in1 in2", "process")|Draw process while defining each elements.<br>This procedure will extract as below.<br>```agent "in1" as in1```<br>```agent "in2" as in2```<br>```usecase "process" as process```<br>```in1 --> process```<br>```in2 --> process```<br>```process --> out```<br>If `inputs` or `outputs` started by `c:`, that element displays as cloud.<br>Note that there is an error occur if you define the element as same name at out of procedure.|![p_sample](./image/2021-03-29-22-43-13.png)|
-|$c(color, inouts)|$c("#pink", "in1 in2")|Fill color to the defined `inputs` or `outputs`.<br>This procedure will extract as below.<br>```agent "in1" as in1 #pink```<br>```agent "in2" as in2 #pink```<br>Note that this procedure should be written after`$d`.|![p_sample](./image/2021-06-03-19-52-32.png)|
+|$d(outputs, inputs, process)|$d("out", "in1,in2", "process")|Draw process while defining each elements.<br>This procedure will extract as below.<br>```agent "in1" as in1```<br>```agent "in2" as in2```<br>```usecase "process" as process```<br>```in1 --> process```<br>```in2 --> process```<br>```process --> out```<br>If `inputs` or `outputs` started by `c:`, that element displays as cloud.<br>Note that there is an error occur if you define the element as same name at out of procedure.|![p_sample](./image/2021-03-29-22-43-13.png)|
+|$c(color, inouts)|$c("#pink", "in1,in2")|Fill color to the defined `inputs` or `outputs`.<br>This procedure will extract as below.<br>```agent "in1" as in1 #pink```<br>```agent "in2" as in2 #pink```<br>Note that this procedure should be written after`$d`.|![p_sample](./image/2021-06-03-19-52-32.png)|
 |$cp(color, process)|$c("#skyblue", "process")|Fill color to the defined `process`.<br>This procedure will extract as below.<br>```usecase "process" as process #skyblue```<br>Note that this procedure should be written after`$d`.|![p_sample](./image/2021-07-18-14-51-41.png)|
 
 ### Setting
