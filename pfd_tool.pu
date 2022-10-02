@@ -359,7 +359,7 @@ skinparam note {
     ' Decide connection direction
     $replace($result) <-- $replace($sub)
 
-    ' Update $inout
+    ' Update $cause
     !$cause = %substr($cause, $minpos($cause) + 1)
   !endwhile
 
@@ -406,6 +406,94 @@ skinparam note {
   left_hand <=> right_hand #red
   left_shoulder <.. right_hand #Blue
   right_shoulder <.. left_hand #Blue
+!endprocedure
+
+' numbering
+' Increment global variable unique_no.
+' Because alias should not include symbol etc.
+' [ret] incremented no.
+!$unique_no = 0
+!function $numbering()
+  !$unique_no = $unique_no + 1
+  !return $unique_no
+!endfunction
+
+' Entity for CRT etc.
+' [in] $entity    Specify entity string
+' [in] $color     Color of entity. default to "".
+!procedure $e($entity, $color="")
+!local $number = $numbering()
+!if %strlen($entity) > 0
+  !if $numbered_crt == 1
+    ' Output numbered entiry
+    !if $color != ""
+      agent "$number##.##$entity" as $number #$color
+    !else
+      agent "$number##.##$entity" as $number
+    !endif
+  !else
+    ' Output non-numbered entiry
+    !if $color != ""
+      agent "$entity" as $number #$color
+    !else
+      agent "$entity" as $number
+    !endif
+  !endif
+!endif
+!endprocedure
+
+' Entities parser for CRT etc.
+' [in] $entities  List of entities separated by ",".
+!procedure $entities($entities)
+!local $comma_splitted_list = %splitstr($entities, ",")
+
+' Split string by "," to get entity
+!foreach $comma_splitted in $comma_splitted_list
+
+  ' Split string by "#" to get entity color
+  !local $sharp_splitted_list = %splitstr($comma_splitted, "#")
+  !local $title = ""
+  !local $color = ""
+  !local $counter = 0
+  !foreach $sharp_splitted in $sharp_splitted_list
+    !if $counter == 0
+      !$title = $sharp_splitted
+    !else
+      !$color = $sharp_splitted
+    !endif
+    !$counter = $counter + 1
+  !endfor
+  $e($title, $color)
+!endfor
+!endprocedure
+
+' Relations parser for CRT etc.
+' [in] $result_and_causes  List of result and causes separated by ",".
+'                          Each result and causes should be "1:2 3".
+'                          1: result, 2, 3: causes (separated by space)
+!procedure $connect_result_from_causes($result_and_causes)
+!local $result_and_cause_list = %splitstr($result_and_causes, ",")
+
+!foreach $result_and_cause in $result_and_cause_list
+  ' Split result and causes
+  !local $result = ""
+  !local $causes = ""
+  !local $temp_list = %splitstr($result_and_cause, ":")
+  !foreach $temp in $temp_list
+    !if $result == ""
+      !$result = $temp
+    !else
+      !$causes = $temp
+    !endif
+  !endfor
+
+  ' Split causes to cause
+  !local $cause_list = %splitstr($causes, " ")
+  !foreach $cause in $cause_list
+    ' Output connector
+    $result <-- $cause
+  !endfor
+!endfor
 !endprocedure
 
 @enduml
