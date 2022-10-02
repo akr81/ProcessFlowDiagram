@@ -92,30 +92,25 @@
     "body": [
       "```puml",
       "!include ./include/pfd_tool.pu",
-      "!\\$space_delimiter = 1",
+      "!\\$numbered_crt = 1",
       "skinparam linetype polyline",
       "skinparam linetype ortho",
       "skinparam nodesep 20",
       "skinparam ranksep 20",
       "",
-      "\\$crt( \\",
-      "    \"$1UDE\", \\",
-      "    \"$2cause1,cause2 cause3\" \\",
-      ")",
-      "\\$c(\"#pink\", \"UDE\")",
+      "\\$entities(\"\\",
+      "$1UDE #pink,\\",
+      "$2cause1,\\",
+      "$3cause2,\\",
+      "$3cause3,\\",
+      "\")",
+      "",
+      "\\$connect_result_from_causes(\"\\",
+      "1:2 3 4,\\",
+      "\")",
       "```"
     ],
     "description": "CRT template"
-  },
-  "cause and result": {
-    "prefix": "cause",
-    "body": [
-      "\\$crt( \\",
-      "    \"$1UDE\", \\",
-      "    \"$2cause1,cause2 cause3\" \\",
-      ")"
-    ],
-    "description": "Cause and Result"
   },
   "evaporating_cloud": {
     "prefix": "cloud",
