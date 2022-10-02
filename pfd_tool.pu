@@ -35,6 +35,9 @@ skinparam note {
 ' But this value seems not comparable value.
 !$invalid_value = 65535
 
+' Auto number to CRT entities
+!$numbered_crt = 1
+
 ' d
 ' Procedure for PFD process in/out with draft mode
 ' [in] $outputs Process outputs. It should be written as string with "," delimiter.
@@ -105,59 +108,35 @@ skinparam note {
 ' [in] $mode      Mode of inout (ex. "i" or "o")
 ' [in] $draft     If specified, make models (optional)
 !procedure $process_common($process, $inout, $mode, $draft="")
-  ' Add usecase type model as process
-  !if ($draft != "") && (%strlen($process) != 0)
+  ' Add usecase as process
+  !if %strlen($process) > 0
     usecase "$process" as $replace($process)
   !endif
 
-  ' Repeat by ","
-  !while (%strlen($inout) >= $minpos($inout))
-    ' Separate string by ","
-    !local $sub = %substr($inout, 0, $minpos($inout))
-
-    ' Add agent type model as input
-    !if ($draft != "")
-      !if ($is_cloud($sub) == %true())
-        ' remove prefix
-        !local $sub = %substr($sub, 2, %strlen($sub))
-        cloud "$sub" as $replace($sub)
-      !else
-        agent "$sub" as $replace($sub)
-      !endif
-    !endif
-    ' Decide connection direction
-    !if (%strlen($process) != 0)
-      !if ($mode == "i")
-        $replace($sub) --> $replace($process)
-      !else
-        $replace($process) --> $replace($sub)
-      !endif
-    !endif
-
-    ' Update $inout
-    !$inout = %substr($inout, $minpos($inout) + 1)
-  !endwhile
-
-  !if (%strlen($inout) != 0)
-    !if ($draft != "")
-      !if ($is_cloud($inout) == %true())
-        ' remove prefix
-        !$inout = %substr($inout, 2, %strlen($inout))
-        cloud "$inout" as $replace($inout)
-      !else
-        agent "$inout" as $replace($inout)
-      !endif
-    !endif
-
-    ' last element
-    !if (%strlen($process) != 0)
-      !if ($mode == "i")
-        $replace($inout) --> $replace($process)
-      !else
-        $replace($process) --> $replace($inout)
-      !endif
-    !endif
+  ' Add input/output with splitting
+  !if $space_delimiter > 0
+    !local $word_list = %splitstr($inout, ",| ")
+  !else
+    !local $word_list = %splitstr($inout, ",")
   !endif
+  !foreach $word in $word_list
+    !if ($is_cloud($word) == %true())
+      ' remove prefix
+      !local $word = %substr($word, 2, %strlen($word))
+      cloud "$word" as $replace($word)
+    !else
+      agent "$word" as $replace($word)
+    !endif
+
+    ' Add connector
+    !if (%strlen($process) > 0)
+      !if ($mode == "i")
+        $replace($word) --> $replace($process)
+      !else
+        $replace($process) --> $replace($word)
+      !endif
+    !endif
+  !endfor
 !endprocedure
 
 ' c
