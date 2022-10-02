@@ -48,16 +48,6 @@ skinparam note {
   $process_out($process, $outputs, "true")
 !endprocedure
 
-' p
-' Procedure for PFD process in/out with normal mode
-' [in] $outputs Process outputs. It should be written as string with "," delimiter.
-' [in] $inputs  Process inputs. It should be written as string with "," delimiter.
-' [in] $process Specify process
-!procedure $p($outputs, $inputs, $process)
-  $process_in($process, $inputs)
-  $process_out($process, $outputs)
-!endprocedure
-
 ' process_in
 ' Procedure for PFD process input
 ' [in] $process Specify process
@@ -67,18 +57,6 @@ skinparam note {
   $process_common($process, $inputs, "i", $draft)
 !endprocedure
 
-' pin
-' Short alias of process_in
-!procedure $pin($process, $inputs, $draft="")
-  $process_in($process, $inputs, $draft)
-!endprocedure
-
-' din
-' Short alias of process_in (draft)
-!procedure $din($process, $inputs)
-  $process_in($process, $inputs, "true")
-!endprocedure
-
 ' process_out
 ' Procedure for PFD process output
 ' [in] $process  Specify process
@@ -86,18 +64,6 @@ skinparam note {
 ' [in] $draft    If specified, make models (optional)
 !procedure $process_out($process, $outputs, $draft="")
   $process_common($process, $outputs, "o", $draft)
-!endprocedure
-
-' pout
-' Short alias of process_out
-!procedure $pout($process, $outputs, $draft="")
-  $process_out($process, $outputs, $draft)
-!endprocedure
-
-' dout
-' Short alias of process_out (draft)
-!procedure $dout($process, $outputs)
-  $process_out($process, $outputs, "true")
 !endprocedure
 
 ' process_common
