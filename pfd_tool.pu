@@ -351,6 +351,25 @@ skinparam note {
   left_hand <=> right_hand #red
   left_shoulder <.. right_hand #Blue
   right_shoulder <.. left_hand #Blue
+  left_hand .. left_note
+  right_hand .. right_note
+  left_ob .r. left_shoulder
+  left_ob .. left_hand
+  right_ob .l. right_shoulder
+  right_ob .. right_hand
+  left_bm .r. head
+  left_bm .. left_shoulder
+  right_bm .l. head
+  right_bm .. right_shoulder
+
+!endprocedure
+
+!procedure $a($assumptions="")
+  !if %strlen($assumptions) > 0
+  note as hoge
+  $assumptions
+  end note
+  !endif
 !endprocedure
 
 ' numbering
