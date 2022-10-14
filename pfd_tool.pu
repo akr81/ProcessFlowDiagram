@@ -86,20 +86,21 @@ skinparam note {
     !local $word_list = %splitstr($inout, ",")
   !endif
   !foreach $word in $word_list
+    !local $raw_word = $word
     !if ($is_cloud($word) == %true())
       ' remove prefix
-      !local $word = %substr($word, 2, %strlen($word))
-      cloud "$word" as $replace($word)
+      !local $raw_word = %substr($word, 2, %strlen($word))
+      cloud "$raw_word" as $replace($raw_word)
     !else
-      agent "$word" as $replace($word)
+      agent "$raw_word" as $replace($raw_word)
     !endif
 
     ' Add connector
     !if (%strlen($process) > 0)
       !if ($mode == "i")
-        $replace($word) --> $replace($process)
+        $replace($raw_word) --> $replace($process)
       !else
-        $replace($process) --> $replace($word)
+        $replace($process) --> $replace($raw_word)
       !endif
     !endif
   !endfor
