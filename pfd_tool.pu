@@ -434,29 +434,44 @@ skinparam note {
 
 ' Relations parser for CRT etc.
 ' [in] $result_and_causes  List of result and causes separated by ",".
-'                          Each result and causes should be "1:2 3".
-'                          1: result, 2, 3: causes (separated by space)
+'                          Each result and causes should be "1 < 2 3".
+'                          1: result, 2, 3: causes (separated by < or >)
 !procedure $connect_result_from_causes($result_and_causes)
 !local $result_and_cause_list = %splitstr($result_and_causes, ",")
 
 !foreach $result_and_cause in $result_and_cause_list
   ' Split result and causes
-  !local $result = ""
+  !local $results = ""
   !local $causes = ""
-  !local $temp_list = %splitstr($result_and_cause, ":")
-  !foreach $temp in $temp_list
-    !if $result == ""
-      !$result = $temp
-    !else
-      !$causes = $temp
-    !endif
-  !endfor
+  !if %strpos($result_and_cause, ">") >= 0
+    !local $temp_list = %splitstr($result_and_cause, ">")
+    !foreach $temp in $temp_list
+      !if $causes == ""
+        !$causes = $temp
+      !else
+        !$results = $temp
+      !endif
+    !endfor
+  !endif
+  !if %strpos($result_and_cause, "<") >= 0
+    !local $temp_list = %splitstr($result_and_cause, "<")
+    !foreach $temp in $temp_list
+      !if $results == ""
+        !$results = $temp
+      !else
+        !$causes = $temp
+      !endif
+    !endfor
+  !endif
 
-  ' Split causes to cause
-  !local $cause_list = %splitstr($causes, " ")
-  !foreach $cause in $cause_list
-    ' Output connector
-    $result <-- $cause
+  ' Split results
+  !local $result_list = %splitstr($results, " ")
+  !foreach $result in $result_list
+    ' Split causes
+    !local $cause_list = %splitstr($causes, " ")
+    !foreach $cause in $cause_list
+      $result <-- $cause
+    !endfor
   !endfor
 !endfor
 !endprocedure
