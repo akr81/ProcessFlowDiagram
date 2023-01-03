@@ -213,7 +213,34 @@ skinparam note {
 ' [ret] replaced string
 !function $replace($string)
   !local $string = $replace_newline($string)
+  !local $string = $replace_obsidian_internal_link($string)
   !local $string = $replace_symbol($string)
+  !return $string
+!endfunction
+
+' replace_obsidian_internal_link
+' Replace PlantUML plugin for Obsidian internal link
+' e.g. [[obsidian://open?vault=FOO&file=BAR ALIAS]]
+' [in] Obsidian internal link string
+' [out] replaced ALIAS string
+!function $replace_obsidian_internal_link($string)
+  !if %strpos($string, "obsidian://open?vault=") > 0
+    'Extract ALIAS part
+    !local $array = %splitstr($string, " ")
+    !local $counter = 0
+    !local $string = ""
+    $counter
+    !foreach $separated in $array
+      !if $counter == 0
+        ' nop to remove first element
+      !else
+        !local $string = $string + $separated
+      !endif
+      !$counter = $counter + 1
+    !endfor
+  !else
+    !local $string = $string
+  !endif
   !return $string
 !endfunction
 
