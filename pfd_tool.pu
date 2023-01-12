@@ -466,6 +466,8 @@ skinparam class {
   !endfor
   $e($title, $color)
 !endfor
+' Reset unique No
+!$unique_no = 0
 !endprocedure
 
 ' Relations parser for CRT etc.
@@ -516,5 +518,69 @@ skinparam class {
   !endfor
 !endfor
 !endprocedure
+
+' Process definition with numbered aliaces
+' [in] inout_aliaces input/output entity aliaces that separated by ">" or "<" and space.
+' [in] process Process name (with color specification)
+!procedure $p($inout_aliaces, $process)
+  ' Needed to display usecase and class simultaneously
+  allowmixing
+  ' Define process as usecase
+  !local $title = ""
+  !local $color = ""
+  ' Increment number
+  !local $number = $numbering()
+  !if %strpos($process, "#") >= 0
+    !local $title_color = %splitstr($process, "#")
+    !foreach $temp in $title_color
+      !if $title == ""
+        !$title = $temp
+      !else
+        !$color = $temp
+      !endif
+    !endfor
+    usecase "p##$number##.##$title" as p##$number #$color
+  !else
+    !$title = $process
+    usecase "p##$number##.##$title" as p##$number
+  !endif
+  !local $inputs = ""
+  !local $outputs = ""
+  !if %strpos($inout_aliaces, ">") >= 0
+    !local $temp_list = %splitstr($inout_aliaces, ">")
+    !foreach $temp in $temp_list
+      !if $inputs == ""
+        !$inputs = $temp
+      !else
+        !$outputs = $temp
+      !endif
+    !endfor
+  !endif
+  !if %strpos($inout_aliaces, "<") >= 0
+    !local $temp_list = %splitstr($inout_aliaces, "<")
+    !foreach $temp in $temp_list
+      !if $outputs == ""
+        !$outputs = $temp
+      !else
+        !$inputs = $temp
+      !endif
+    !endfor
+  !endif
+
+  ' Connect inputs to process
+  !local $input_list = %splitstr($inputs, " ")
+  !foreach $input in $input_list
+    $input --> p##$number
+  !endfor
+
+  ' Connect process to outputs
+  !local $output_list = %splitstr($outputs, " ")
+  !foreach $output in $output_list
+    p##$number --> $output
+  !endfor
+
+!endprocedure
+
+
 
 @enduml
