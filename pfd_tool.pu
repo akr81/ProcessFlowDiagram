@@ -35,8 +35,8 @@ skinparam note {
 ' But this value seems not comparable value.
 !$invalid_value = 65535
 
-' Auto number to CRT entities
-!$numbered_crt = 1
+' Auto number to entities
+!$numbered = 1
 
 ' d
 ' Procedure for PFD process in/out with draft mode
@@ -418,7 +418,7 @@ skinparam note {
 !local $number = $numbering()
 
 !if (%strlen($entity) > 0) && ($entity != " ")
-  !if $numbered_crt == 1
+  !if $numbered == 1
     ' Output numbered entiry
     !if $color != ""
       class "$number##.##$entity" as $number #$color
@@ -455,15 +455,12 @@ skinparam class {
   !local $sharp_splitted_list = %splitstr($comma_splitted, "#")
   !local $title = ""
   !local $color = ""
-  !local $counter = 0
-  !foreach $sharp_splitted in $sharp_splitted_list
-    !if $counter == 0
-      !$title = $sharp_splitted
-    !else
-      !$color = $sharp_splitted
-    !endif
-    !$counter = $counter + 1
-  !endfor
+
+  ' Separate title and color
+  $separate($comma_splitted, "#")
+  !$title = $left_side
+  !$color = $right_side
+
   $e($title, $color)
 !endfor
 ' Reset unique No
@@ -482,24 +479,14 @@ skinparam class {
   !local $results = ""
   !local $causes = ""
   !if %strpos($result_and_cause, ">") >= 0
-    !local $temp_list = %splitstr($result_and_cause, ">")
-    !foreach $temp in $temp_list
-      !if $causes == ""
-        !$causes = $temp
-      !else
-        !$results = $temp
-      !endif
-    !endfor
+    $separate($result_and_cause, ">")
+    !$results = $right_side
+    !$causes = $left_side
   !endif
   !if %strpos($result_and_cause, "<") >= 0
-    !local $temp_list = %splitstr($result_and_cause, "<")
-    !foreach $temp in $temp_list
-      !if $results == ""
-        !$results = $temp
-      !else
-        !$causes = $temp
-      !endif
-    !endfor
+    $separate($result_and_cause, "<")
+    !$results = $left_side
+    !$causes = $right_side
   !endif
 
   ' Split results
@@ -534,10 +521,18 @@ skinparam class {
     $separate($process, "#")
     !$title = $left_side
     !$color = $right_side
-    usecase "p##$number##.##$title" as p##$number #$color
+    !if $numbered == 1
+      usecase "p##$number##.##$title" as p##$number #$color
+    !else
+      usecase "$title" as p##$number #$color
+    !endif
   !else
     !$title = $process
-    usecase "p##$number##.##$title" as p##$number
+    !if $numbered == 1
+      usecase "p##$number##.##$title" as p##$number
+    !else
+      usecase "$title" as p##$number
+    !endif
   !endif
   !local $inputs = ""
   !local $outputs = ""
@@ -574,6 +569,9 @@ skinparam class {
 ' [out] left_side Left half of target string
 ' [out] right_side Right half of target string
 !procedure $separate($target, $separator)
+  'Reset variables
+  !$left_side = ""
+  !$right_side = ""
   !local $separated = %splitstr($target, $separator)
   !local $counter = 0
   !foreach $temp in $separated
