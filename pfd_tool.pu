@@ -19,6 +19,7 @@ skinparam note {
     BackgroundColor White
     BorderColor Black
 }
+allowmixing
 
 ' Default delimiter
 ' If you want to use other than "," as separator, please modify or overwrite this.
@@ -417,20 +418,28 @@ skinparam note {
 ' count up even if " " entiry specified
 !local $number = $numbering()
 
+!local $form = ""
+!if $is_cloud($entity)
+  !$form = cloud
+  ' Remove prefix "c:"
+  !$entity = %substr($entity, 2)
+!else
+  !$form = class
+!endif
 !if (%strlen($entity) > 0) && ($entity != " ")
   !if $numbered == 1
     ' Output numbered entiry
     !if $color != ""
-      class "$number##.##$entity" as $number #$color
+      $form "$number##.##$entity" as $number #$color
     !else
-      class "$number##.##$entity" as $number
+      $form "$number##.##$entity" as $number
     !endif
   !else
     ' Output non-numbered entiry
     !if $color != ""
-      class "$entity" as $number #$color
+      $form "$entity" as $number #$color
     !else
-      class "$entity" as $number
+      $form "$entity" as $number
     !endif
   !endif
 !endif
@@ -510,8 +519,6 @@ skinparam class {
 ' [in] inout_aliaces input/output entity aliaces that separated by ">" or "<" and space.
 ' [in] process Process name (with color specification)
 !procedure $p($inout_aliaces, $process)
-  ' Needed to display usecase and class simultaneously
-  allowmixing
   ' Define process as usecase
   !local $title = ""
   !local $color = ""
