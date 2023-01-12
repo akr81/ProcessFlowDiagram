@@ -531,14 +531,9 @@ skinparam class {
   ' Increment number
   !local $number = $numbering()
   !if %strpos($process, "#") >= 0
-    !local $title_color = %splitstr($process, "#")
-    !foreach $temp in $title_color
-      !if $title == ""
-        !$title = $temp
-      !else
-        !$color = $temp
-      !endif
-    !endfor
+    $separate($process, "#")
+    !$title = $left_side
+    !$color = $right_side
     usecase "p##$number##.##$title" as p##$number #$color
   !else
     !$title = $process
@@ -547,24 +542,14 @@ skinparam class {
   !local $inputs = ""
   !local $outputs = ""
   !if %strpos($inout_aliaces, ">") >= 0
-    !local $temp_list = %splitstr($inout_aliaces, ">")
-    !foreach $temp in $temp_list
-      !if $inputs == ""
-        !$inputs = $temp
-      !else
-        !$outputs = $temp
-      !endif
-    !endfor
+    $separate($inout_aliaces, ">")
+    !$inputs = $left_side
+    !$outputs = $right_side
   !endif
   !if %strpos($inout_aliaces, "<") >= 0
-    !local $temp_list = %splitstr($inout_aliaces, "<")
-    !foreach $temp in $temp_list
-      !if $outputs == ""
-        !$outputs = $temp
-      !else
-        !$inputs = $temp
-      !endif
-    !endfor
+    $separate($inout_aliaces, "<")
+    !$inputs = $right_side
+    !$outputs = $left_side
   !endif
 
   ' Connect inputs to process
@@ -578,9 +563,28 @@ skinparam class {
   !foreach $output in $output_list
     p##$number --> $output
   !endfor
-
 !endprocedure
 
+' Global variables
+!$left_side = ""
+!$right_side = ""
+' Separate string by separator and update global variables
+' [in] target Target string
+' [in] separator Separator
+' [out] left_side Left half of target string
+' [out] right_side Right half of target string
+!procedure $separate($target, $separator)
+  !local $separated = %splitstr($target, $separator)
+  !local $counter = 0
+  !foreach $temp in $separated
+    !if $counter == 0
+      !$left_side = $temp
+    !else
+      !$right_side = $temp
+    !endif
+    !$counter = $counter + 1
+  !endfor
+!endprocedure
 
 
 @enduml
