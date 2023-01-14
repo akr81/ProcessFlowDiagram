@@ -31,6 +31,7 @@ PlantUML + VSCode(またはObsidian)でプロセスフロー図(PFD)を描くた
 |-----------------|--------------------------------------------------------------------------------------------|----------------------------------------------------------|
 | プラグイン           | [Markdown preview enhanced](https://github.com/shd101wyy/vscode-markdown-preview-enhanced) | [PlantUML](https://github.com/joethei/obsidian-plantuml) |
 | plantuml.jar(*) | >=2022.09                                                                                  | ←                                                        |
+
 (*) プラグインに同梱されているplantuml.jarが古い場合、プロシージャが利用している関数が実装されていないためエラーとなります。
 
 ## PlantUMLプロシージャ
