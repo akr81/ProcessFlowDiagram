@@ -18,9 +18,14 @@ PlantUML + VSCode(またはObsidian)でプロセスフロー図(PFD)を描くた
         - [connect_result_from_causes](#connect_result_from_causes)
         - [プロシージャの設定](#%E3%83%97%E3%83%AD%E3%82%B7%E3%83%BC%E3%82%B8%E3%83%A3%E3%81%AE%E8%A8%AD%E5%AE%9A)
             - [項目番号の表示/非表示](#%E9%A0%85%E7%9B%AE%E7%95%AA%E5%8F%B7%E3%81%AE%E8%A1%A8%E7%A4%BA%E9%9D%9E%E8%A1%A8%E7%A4%BA)
+        - [設定項目](#%E8%A8%AD%E5%AE%9A%E9%A0%85%E7%9B%AE)
     - [VSCodeユーザスニペット/Obsidianテンプレート](#vscode%E3%83%A6%E3%83%BC%E3%82%B6%E3%82%B9%E3%83%8B%E3%83%9A%E3%83%83%E3%83%88obsidian%E3%83%86%E3%83%B3%E3%83%97%E3%83%AC%E3%83%BC%E3%83%88)
+    - [VSCodeユーザスニペット](#vscode%E3%83%A6%E3%83%BC%E3%82%B6%E3%82%B9%E3%83%8B%E3%83%9A%E3%83%83%E3%83%88)
     - [使用イメージ](#%E4%BD%BF%E7%94%A8%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8)
         - [注意点](#%E6%B3%A8%E6%84%8F%E7%82%B9)
+    - [使用イメージ](#%E4%BD%BF%E7%94%A8%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8)
+    - [制限事項](#%E5%88%B6%E9%99%90%E4%BA%8B%E9%A0%85)
+        - [記号の取り扱い](#%E8%A8%98%E5%8F%B7%E3%81%AE%E5%8F%96%E3%82%8A%E6%89%B1%E3%81%84)
 
 <!-- /TOC -->
 
@@ -32,11 +37,12 @@ PlantUML + VSCode(またはObsidian)でプロセスフロー図(PFD)を描くた
 | プラグイン           | [Markdown preview enhanced](https://github.com/shd101wyy/vscode-markdown-preview-enhanced) | [PlantUML](https://github.com/joethei/obsidian-plantuml) |
 | plantuml.jar(*) | >=2022.09                                                                                  | ←                                                        |
 
-(*) プラグインに同梱されているplantuml.jarが古い場合、プロシージャが利用している関数が実装されていないためエラーとなります。
+(*) プラグインに同梱されているplantuml.jarが古い場合、プロシージャが利用している関数が実装されていないためエラーとなります。  
+[PlantUMLのサイト](https://plantuml.com/ja/download)からplantuml.jarを入手し、プラグイン設定で指定するなどしてください。
 
 ## PlantUMLプロシージャ
 PFDを描くにあたって必要となる`プロセス`と`入出力(中間成果物)`との接続の記述を簡略化するためのものです。  
-`pfd_tool.pu`がプロシージャの定義ファイルにあたり、使用するには以下のように`include`を行う必要があります。
+`pfd_tool.pu`が定義ファイルにあたり、使用するには以下のように`include`を行う必要があります。
 ```
 !include PATH_TO_DIR/pfd_tool.pu
 ```
@@ -48,7 +54,7 @@ PFDを描くにあたって必要となる`プロセス`と`入出力(中間成�
 $entities("入出力1,入出力2,...")
 ```
 PFDを構成する入出力((中間)成果物)を、","区切りで定義します。  
-定義した順にエイリアスとして`連番`が付与されます。
+定義した順にエイリアスとして`連番`が付与されます(下画像のように、`連番`つきで表示されます。非表示にしたい場合は、[項目番号の表示/非表示](#%E9%A0%85%E7%9B%AE%E7%95%AA%E5%8F%B7%E3%81%AE%E8%A1%A8%E7%A4%BA%E9%9D%9E%E8%A1%A8%E7%A4%BA)を参照してください)。
 
 各成果物について、以下の装飾をすることができます。
 - 先頭に`c:`を付与
