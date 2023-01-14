@@ -1,6 +1,6 @@
 {
-  "PFD template": {
-    "prefix": "pfd",
+  "PFD old template": {
+    "prefix": "pfd_old",
     "body": [
       "```puml",
       "!include ./include/pfd_tool.pu",
@@ -20,7 +20,7 @@
       "\\$cp(\"#skyblue\", \"process\")",
       "```"
     ],
-    "description": "PFD template"
+    "description": "PFD old template"
   },
   "draft process": {
     "prefix": "d",
@@ -50,6 +50,37 @@
       "\\$replace(\"$CLIPBOARD\")"
     ],
     "description": "replace procedure from clipboard"
+  },
+  "PFD template": {
+    "prefix": "pfd",
+    "body": [
+      "```puml",
+      "!include ./include/pfd_tool.pu",
+      "!\\$numbered = 1",
+      "left to right direction",
+      "skinparam linetype polyline",
+      "skinparam linetype ortho",
+      "skinparam nodesep 20",
+      "skinparam ranksep 20",
+      "",
+      "\\$entities(\"\\",
+      "out,\\",
+      "in1#pink,\\",
+      "in2,\\",
+      "c:in3\\",
+      "\")",
+      "",
+      "\\$p(\"2 3 4 > 1\", \"process#skyblue\")",
+      "```"
+    ],
+    "description": "PFD template"
+  },
+  "process": {
+    "prefix": "p",
+    "body": [
+      "\\$p(\"2 3 4 > 1\", \"process#skyblue\")"
+    ],
+    "description": "PFD process"
   },
   "multi line note": {
     "prefix": "n",
