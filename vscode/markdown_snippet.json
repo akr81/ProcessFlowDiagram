@@ -123,7 +123,7 @@
     "body": [
       "```puml",
       "!include ./include/pfd_tool.pu",
-      "!\\$numbered_crt = 1",
+      "!\\$numbered = 1",
       "skinparam linetype polyline",
       "skinparam linetype ortho",
       "skinparam nodesep 20",
