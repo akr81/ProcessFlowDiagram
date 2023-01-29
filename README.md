@@ -18,6 +18,7 @@ PlantUML + VSCode(またはObsidian)でプロセスフロー図(PFD)を描くた
         - [connect_result_from_causes](#connect_result_from_causes)
         - [プロシージャの設定](#%E3%83%97%E3%83%AD%E3%82%B7%E3%83%BC%E3%82%B8%E3%83%A3%E3%81%AE%E8%A8%AD%E5%AE%9A)
             - [項目番号の表示/非表示](#%E9%A0%85%E7%9B%AE%E7%95%AA%E5%8F%B7%E3%81%AE%E8%A1%A8%E7%A4%BA%E9%9D%9E%E8%A1%A8%E7%A4%BA)
+            - [改行の自動挿入](#%E6%94%B9%E8%A1%8C%E3%81%AE%E8%87%AA%E5%8B%95%E6%8C%BF%E5%85%A5)
         - [設定項目](#%E8%A8%AD%E5%AE%9A%E9%A0%85%E7%9B%AE)
     - [VSCodeユーザスニペット/Obsidianテンプレート](#vscode%E3%83%A6%E3%83%BC%E3%82%B6%E3%82%B9%E3%83%8B%E3%83%9A%E3%83%83%E3%83%88obsidian%E3%83%86%E3%83%B3%E3%83%97%E3%83%AC%E3%83%BC%E3%83%88)
     - [VSCodeユーザスニペット](#vscode%E3%83%A6%E3%83%BC%E3%82%B6%E3%82%B9%E3%83%8B%E3%83%9A%E3%83%83%E3%83%88)
@@ -114,9 +115,10 @@ $connect_result_from_causes("\
 ![](image/2023-01-14-14-42-50.png)
 
 ### プロシージャの設定
+いずれもプロシージャファイルのinclude後、プロシージャの呼び出し前に設定する必要があります。
+
 #### 項目番号の表示/非表示
 `!$numbered = 0`と設定すると、定義された入出力とプロセスに付与された連番を非表示にすることができます。  
-(各プロシージャの呼び出し前に設定する必要があります。)
 
 [サンプル](https://www.plantuml.com/plantuml/uml/JSd1JWCX483XEqz1QGyrsIpTNG-cYQO7uzatC2oCxGGO23EayUtTWr6F__zTM5oJdfFQ8VdK0-YRIEMpjStTnolAhQ-TeVb20YIZBzcws9uc-zwA1-QtLEwlwAxDPPiTagsVuKDAIMFjYYDITHjfAW4OgfvF_sPp57-csXsevnKQ1FsiJ-e092W8V3H8q-3FIFE0jEmhKjooTDbp_5fJ1_EW3lLe9Zth5xsOGHjskIQOVc7PuF4FvWtK1IZqdBu1)
 ```
@@ -126,6 +128,15 @@ $p("1 2 > 3", "sample1")
 $p("1 3 > 4", "sample2")
 ```
 ![](image/2023-01-14-14-50-43.png)
+
+#### 改行の自動挿入
+`!$target_length = 任意の文字数`と設定すると、設定した文字数で各要素が改行されます。  
+`!$newline_at_space`(1または0)を同時に設定することによって、動作が変わります。
+
+|`$newline_at_space`の値|動作|
+|----|----|----|
+|1|設定した`$target_length`を超えた後、最初に現れた半角空白を改行に置き換えます。<br>(英語利用時に、単語の途中で改行されなくすることを意図しています)|
+|0|設定した`$target_length`ごとに改行が挿入されます。|
 
 <details>
 <summary>以前の書き方の説明</summary>

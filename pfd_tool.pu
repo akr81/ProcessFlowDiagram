@@ -39,6 +39,14 @@ allowmixing
 ' Auto number to entities
 !$numbered = 1
 
+' Target length
+' Insert newline automatically.
+!$target_length = 1024
+
+' Newline at space
+' If 1, replace space to newline when current line length exceeded target_length.
+!$newline_at_space = 1
+
 ' d
 ' Procedure for PFD process in/out with draft mode
 ' [in] $outputs Process outputs. It should be written as string with "," delimiter.
@@ -426,6 +434,8 @@ allowmixing
 !else
   !$form = class
 !endif
+' Add newline
+!$entity = $newline_formatter($entity)
 !if (%strlen($entity) > 0) && ($entity != " ")
   !if $numbered == 1
     ' Output numbered entiry
@@ -528,6 +538,7 @@ skinparam class {
     $separate($process, "#")
     !$title = $left_side
     !$color = $right_side
+    !$title = $newline_formatter($title)
     !if $numbered == 1
       usecase "p##$number##.##$title" as p##$number #$color
     !else
@@ -535,6 +546,7 @@ skinparam class {
     !endif
   !else
     !$title = $process
+    !$title = $newline_formatter($title)
     !if $numbered == 1
       usecase "p##$number##.##$title" as p##$number
     !else
@@ -591,5 +603,35 @@ skinparam class {
   !endfor
 !endprocedure
 
+' Insert newline to entity/process
+' [in] string Target string
+' return Target string (newline inserted)
+!function $newline_formatter($string)
+  !local $formatted_string = ""
+  !if $newline_at_space == 1
+    !local $separated_array = %splitstr($string, " ")
+    !local $chunk = ""
+    !foreach $word in $separated_array
+      !$chunk = $chunk + " " + $word
+      !if %strlen($chunk) >= $target_length
+        !$formatted_string = $formatted_string + $chunk
+        !$chunk = "\n"
+      !endif
+    !endfor
+    !if $chunk != "\n"
+      !$formatted_string = $formatted_string + $chunk
+    !endif
+  !else
+    !local $start_pos = 0
+    !while $start_pos <= %strlen($string) -1
+      !if $formatted_string != ""
+        !$formatted_string = $formatted_string + "\n"
+      !endif
+      !$formatted_string = $formatted_string + %substr($string, $start_pos, $target_length)
+      !$start_pos = $start_pos + $target_length
+    !endwhile
+  !endif
+  !return $formatted_string
+!endfunction
 
 @enduml

@@ -1,6 +1,8 @@
 ```puml
 !include ../ProcessFlowDiagram/pfd_tool.pu
 !$numbered = 1
+!$target_length = 15
+!$newline_at_space = 0
 left to right direction
 skinparam linetype polyline
 skinparam linetype ortho
