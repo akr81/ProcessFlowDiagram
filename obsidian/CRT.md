@@ -16,6 +16,6 @@ cause3,\
 ")
 
 $connect_result_from_causes("\
-1 < 2 3 4,\
+2 3 4 > 1,\
 ")
 ```
