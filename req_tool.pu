@@ -101,9 +101,18 @@ allowmixing
   ' Separate $requirements to (title, text) list
   !local $word_list = %splitstr($blocks, ",")
   !foreach $word in $word_list
+    !local $color = ""
+    $separate($word, "#")
+    !$word = $left_side
+    !$color = $right_side
+
     !local $number = $numbering()
     !$word = $newline_formatter($word)
-    class "$number##.##$word" as $number <<block>>
+    !if $color != ""
+      class "$number##.##$word" as $number <<block>> #$color
+    !else
+      class "$number##.##$word" as $number <<block>>
+    !endif
   !endfor
 !endprocedure
 
