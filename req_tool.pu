@@ -62,10 +62,10 @@ allowmixing
   !foreach $word in $word_list
     !if ($title_flag == %true())
       ' $word is title
-      !local $title = $word
+      !local $title = $newline_formatter($word)
     !else
       ' $word is text
-      !local $text = $word
+      !local $text = $newline_formatter($word)
     !endif
     !if ($title_flag == %false())
       !local $number = $numbering()
@@ -88,6 +88,7 @@ allowmixing
   !local $word_list = %splitstr($blocks, ",")
   !foreach $word in $word_list
     !local $number = $numbering()
+    !$word = $newline_formatter($word)
     class "$number##.##$word" as $number <<block>>
   !endfor
 !endprocedure
