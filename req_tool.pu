@@ -3,8 +3,6 @@
 hide circle
 hide empty members
 hide method
-skinparam linetype polyline
-skinparam linetype ortho
 skinparam usecase {
 BackgroundColor White
 ArrowColor Black
@@ -59,9 +57,15 @@ allowmixing
   ' Separate $requirements to (title, text) list
   !local $word_list = %splitstr($requirements, ",")
   !local $title_flag = %true()
+  !local $color = ""
   !foreach $word in $word_list
     !if ($title_flag == %true())
       ' $word is title
+      ' Separate title and color
+      $separate($word, "#")
+      !$word = $left_side
+      !$color = $right_side
+
       !local $title = $newline_formatter($word)
     !else
       ' $word is text
@@ -70,11 +74,21 @@ allowmixing
     !if ($title_flag == %false())
       !local $number = $numbering()
       !if ($detailed == 1)
-        class "$number##.##$title" as $number <<requirement>> {
-          {field}text=$text
-        }
+        !if $color != ""
+          class "$number##.##$title" as $number <<requirement>> #$color {
+            {field}text=$text
+          }
+        !else
+          class "$number##.##$title" as $number <<requirement>> {
+            {field}text=$text
+          }
+        !endif
       !else
-        class "$number##.##$title" as $number <<requirement>>
+        !if $color != ""
+          class "$number##.##$title" as $number <<requirement>> #$color
+        !else
+          class "$number##.##$title" as $number <<requirement>>
+        !endif
       !endif
     !endif
     !$title_flag = %not($title_flag)
