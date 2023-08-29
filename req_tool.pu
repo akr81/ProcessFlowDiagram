@@ -1,0 +1,759 @@
+@startuml
+' Color setting
+hide circle
+hide empty members
+hide method
+skinparam linetype polyline
+skinparam linetype ortho
+skinparam usecase {
+BackgroundColor White
+ArrowColor Black
+BorderColor Black
+FontSize 12
+}
+skinparam class {
+BackgroundColor White
+ArrowColor Black
+BorderColor Black
+}
+skinparam note {
+BackgroundColor White
+ArrowColor Black
+BorderColor Black
+FontSize 12
+}
+allowmixing
+
+' Default delimiter
+' If you want to use other than "," as separator, please modify or overwrite this.
+!$default_delimiter = ","
+
+' Delimiter setting
+' If you familiar with English, It might be better not to use SPACE as delimiter.
+' 1: Use space as delimiter (default)
+' 0: Not use space as delimiter (comma only)
+!$space_delimiter = 1
+
+' Invalid constant
+' %strpos() returns -1 if not matched.
+' But this value seems not comparable value.
+!$invalid_value = 65535
+
+' Auto number to entities
+!$numbered = 1
+
+' Target length
+' Insert newline automatically.
+!$target_length = 1024
+
+' Newline at space
+' If 1, replace space to newline when current line length exceeded target_length.
+!$newline_at_space = 1
+
+' Display detail of not
+!$detailed = 1
+
+' req
+' Procedure for requirement
+!procedure $req($requirements)
+  ' Separate $requirements to (title, text) list
+  !local $word_list = %splitstr($requirements, ",")
+  !local $title_flag = %true()
+  !foreach $word in $word_list
+    !if ($title_flag == %true())
+      ' $word is title
+      !local $title = $word
+    !else
+      ' $word is text
+      !local $text = $word
+    !endif
+    !if ($title_flag == %false())
+      !local $number = $numbering()
+      !if ($detailed == 1)
+        class "$number##.##$title" as $number <<requirement>> {
+          {field}text=$text
+        }
+      !else
+        class "$number##.##$title" as $number <<requirement>>
+      !endif
+    !endif
+    !$title_flag = %not($title_flag)
+  !endfor
+!endprocedure
+
+' block
+' Procedure for block
+!procedure $block($blocks)
+  ' Separate $requirements to (title, text) list
+  !local $word_list = %splitstr($blocks, ",")
+  !foreach $word in $word_list
+    !local $number = $numbering()
+    class "$number##.##$word" as $number <<block>>
+  !endfor
+!endprocedure
+
+' Relations parser for Requirement diagram.
+' [in] $result_and_causes  List of result and causes separated by ",".
+'                          Each result and causes should be "1 < 2 3".
+'                          1: result, 2, 3: causes (separated by < or >)
+!procedure $connect_req($result_and_causes)
+!local $result_and_cause_list = %splitstr($result_and_causes, ",")
+
+' Start from 1 because 0 use to judge char
+!local $param_num = 1
+!foreach $result_and_cause in $result_and_cause_list
+  ' Split result and causes
+  !local $results = ""
+  !local $causes = ""
+  !local $connector = ""
+  !local $kind = ""
+  !if %strpos($result_and_cause, "+") >= 0
+    $separate($result_and_cause, "+")
+    !$results = $right_side
+    !$causes = $left_side
+    !$connector = "+--"
+  !endif
+  !if %strpos($result_and_cause, "d") >= 0
+    $separate($result_and_cause, "d")
+    !$results = $right_side
+    !$causes = $left_side
+    !$connector = "<.."
+    !$kind = "<<deriveReqt>>"
+  !endif
+  !if %strpos($result_and_cause, "s") >= 0
+    $separate($result_and_cause, "s")
+    !$results = $right_side
+    !$causes = $left_side
+    !$connector = "<.."
+    !$kind = "<<satisfy>>"
+  !endif
+
+  ' Split results
+  !local $result_list = %splitstr($results, " ")
+  !foreach $result in $result_list
+    ' Split causes
+    !local $cause_list = %splitstr($causes, " ")
+    !foreach $cause in $cause_list
+      !if $kind == ""
+        $result $connector $cause
+      !else
+        $result $connector $cause: $kind
+      !endif
+    !endfor
+  !endfor
+  !local $param_num = $param_num + 1
+!endfor
+!endprocedure
+
+
+
+' d
+' Procedure for PFD process in/out with draft mode
+' [in] $outputs Process outputs. It should be written as string with "," delimiter.
+' [in] $inputs  Process inputs. It should be written as string with "," delimiter.
+' [in] $process Specify process
+!procedure $d($outputs, $inputs, $process)
+  $process_in($process, $inputs, "true")
+  $process_out($process, $outputs, "true")
+!endprocedure
+
+' process_in
+' Procedure for PFD process input
+' [in] $process Specify process
+' [in] $inputs  Process inputs. It should be written as string with "," delimiter.
+' [in] $draft   If specified, make models (optional)
+!procedure $process_in($process, $inputs, $draft="")
+  $process_common($process, $inputs, "i", $draft)
+!endprocedure
+
+' process_out
+' Procedure for PFD process output
+' [in] $process  Specify process
+' [in] $outputs  Process outputs. It should be written as string with "," delimiter.
+' [in] $draft    If specified, make models (optional)
+!procedure $process_out($process, $outputs, $draft="")
+  $process_common($process, $outputs, "o", $draft)
+!endprocedure
+
+' process_common
+' Common procedure for both in/out
+' Note: This should called by other procedure
+' [in] $process   Specify process
+' [in] $inout     Process inputs/outputs. It should be written as string with "," delimiter.
+' [in] $mode      Mode of inout (ex. "i" or "o")
+' [in] $draft     If specified, make models (optional)
+!procedure $process_common($process, $inout, $mode, $draft="")
+  ' Add usecase as process
+  !if %strlen($process) > 0
+    usecase "$process" as $replace($process)
+  !endif
+
+  ' Add input/output with splitting
+  !if $space_delimiter > 0
+    !local $word_list = %splitstr($inout, ",| ")
+  !else
+    !local $word_list = %splitstr($inout, ",")
+  !endif
+
+    !local $raw_word = $word
+    !if ($is_cloud($word) == %true())
+      ' remove prefix
+      !local $raw_word = %substr($word, 2, %strlen($word))
+      cloud "$raw_word" as $replace($raw_word)
+    !else
+      agent "$raw_word" as $replace($raw_word)
+    !endif
+
+    ' Add connector
+    !if (%strlen($process) > 0)
+      !if ($mode == "i")
+        $replace($raw_word) --> $replace($process)
+      !else
+        $replace($process) --> $replace($raw_word)
+      !endif
+    !endif
+    $counter = $counter + 1
+  !endfor
+!endprocedure
+
+' c
+' Overwrite deliverable element with specified color.
+' [in] $color   Specify color
+' [in] $inout   Process inputs/outputs. It should be written as string with "," delimiter.
+!procedure $c($color, $inout)
+  ' Repeat by ","
+  !while (%strlen($inout) >= $minpos($inout))
+    ' Separate string by ","
+    !local $sub = %substr($inout, 0, $minpos($inout))
+
+    ' Add agent type model as input
+    !if ($draft != "")
+      !if ($is_cloud($sub) == %true())
+        ' remove prefix
+        !local $sub = %substr($sub, 2, %strlen($sub))
+        cloud "$sub" as $replace($sub) $color
+      !else
+        agent "$sub" as $replace($sub) $color
+      !endif
+    !endif
+
+    ' Update $inout
+    !$inout = %substr($inout, $minpos($inout) + 1)
+  !endwhile
+
+  !if ($draft != "")
+    !if ($is_cloud($inout) == %true())
+      ' remove prefix
+      !$inout = %substr($inout, 2, %strlen($inout))
+      cloud "$inout" as $replace($inout) $color
+    !else
+      agent "$inout" as $replace($inout) $color
+    !endif
+  !endif
+!endprocedure
+
+' cp
+' Overwrite process element with specified color.
+' [in] $color   Specify color
+' [in] $inout   Processes. It should be written as string with "," delimiter.
+!procedure $cp($color, $inout)
+  ' Repeat by ","
+  !while (%strlen($inout) >= $minpos($inout))
+    ' Separate string by ","
+    !local $sub = %substr($inout, 0, $minpos($inout))
+
+    ' Add usecase type model as input
+    !if ($draft != "")
+      usecase "$sub" as $replace($sub) $color
+    !endif
+
+    ' Update $inout
+    !$inout = %substr($inout, $minpos($inout) + 1)
+  !endwhile
+
+  !if ($draft != "")
+    usecase "$inout" as $replace($inout) $color
+  !endif
+!endprocedure
+
+' minpos function
+' Return smaller position of delimiter
+' [in] string
+!function $minpos($string)
+  ' delimiter
+  !if %strpos($string, $default_delimiter) >= 0
+    !local $len_to_comma = %strpos($string, $default_delimiter)
+  !else
+    !local $len_to_comma = $invalid_value
+  !endif
+  !if %strpos($string, " ") >= 0
+    !local $len_to_space = %strpos($string, " ")
+  !else
+    !local $len_to_space = $invalid_value
+  !endif
+
+  !if ($space_delimiter != 1)
+    ' Not use space as delimiter
+    !local $len_to_space = $invalid_value
+  !endif
+
+  ' Comparing variable and negative value does not work well.
+  !if ($len_to_comma == $invalid_value) && ($len_to_space == $invalid_value)
+    !local $retval = $invalid_value
+  !elseif ($len_to_comma == $invalid_value)
+    !local $retval = $len_to_space
+  !elseif ($len_to_space == $invalid_value)
+    !local $retval = $len_to_comma
+  !else
+    ' Both values are not invalid
+    !if ($len_to_comma > $len_to_space)
+      !local $retval = $len_to_space
+    !else
+      !local $retval = $len_to_comma
+    !endif
+  !endif
+  !return $retval
+!endfunction
+
+
+' replace
+' Replace symbol or other special string to ""
+' Because alias should not include symbol etc.
+' [in] string
+' [ret] replaced string
+!function $replace($string)
+  !local $string = $replace_newline($string)
+  !local $string = $replace_obsidian_internal_link($string)
+  !local $string = $replace_symbol($string)
+  !return $string
+!endfunction
+
+' replace_obsidian_internal_link
+' Replace PlantUML plugin for Obsidian internal link
+' e.g. [[obsidian://open?vault=FOO&file=BAR ALIAS]]
+' [in] Obsidian internal link string
+' [out] replaced ALIAS string
+!function $replace_obsidian_internal_link($string)
+  !if %strpos($string, "obsidian://open?vault=") > 0
+    'Extract ALIAS part
+    !local $array = %splitstr($string, " ")
+    !local $counter = 0
+    !local $string = ""
+    $counter
+    !foreach $separated in $array
+      !if $counter == 0
+        ' nop to remove first element
+      !else
+        !local $string = $string + $separated
+      !endif
+      !$counter = $counter + 1
+    !endfor
+  !else
+    !local $string = $string
+  !endif
+  !return $string
+!endfunction
+
+' replace_symbol
+' Replace symbol character to ""
+' [in] string
+' [ret] replaced string
+!function $replace_symbol($string)
+  !local $index = 0
+  !local $ret_str = ""
+  !while $index != %strlen($string)
+    !local $sub = %substr($string, $index, 1)
+
+    ' replace symbol to ""
+    !if %strpos("!?#/-()^:'[] ！？＃・－～（）＾＿￥：", $sub) >= 0
+      !local $sub = "_"
+    !endif
+
+    !$ret_str = $ret_str + $sub
+    !$index = $index + 1
+  !endwhile
+  !return $ret_str
+!endfunction
+
+' replace_newline
+' Replace "\n" to ""
+' [in] string
+' [ret] replaced string
+!function $replace_newline($string)
+  !local $index = 0
+  !local $ret_str = ""
+  !while $index < %strlen($string)
+    ' Get two chars as unit for "\n" check
+    !local $sub = %substr($string, $index, 2)
+    ' replace \n to ""
+    !if %strpos("\n", $sub) >= 0
+      !local $sub = ""
+    !endif
+
+    !if ($sub == "")
+      ' Replaced
+      !$ret_str = $ret_str + $sub
+      ' Due to 2 char replaced, increment index 2
+      !$index = $index + 2
+    !else
+      ' Not replaced
+      ' First char is confirmed to use
+      !$ret_str = $ret_str + %substr($sub, 0, 1)
+      !$index = $index + 1
+    !endif
+  !endwhile
+  !return $ret_str
+!endfunction
+
+
+' is_cloud
+' Judge specified string meet the condition of cloud element
+' [in] string
+' [ret] true: string is cloud element, false: string is NOT cloud element
+!function $is_cloud($string)
+  !if %strpos($string, "c:") == 0
+    !return %true()
+  !else
+    !return %false()
+  !endif
+!endfunction
+
+
+' CRT(Current Reality Tree)
+' [in] $result    Specify result
+' [in] $cause     Causes of result. It should be written as string with "," delimiter.
+' [in] $draft     If specified, make models (optional, default as true)
+!procedure $crt($result, $cause, $draft="true")
+  ' Add usecase type model as process
+  !if ($draft != "")
+    agent "$result" as $replace($result)
+  !endif
+
+  ' Repeat by ","
+  !while (%strlen($cause) >= $minpos($cause))
+    ' Separate string by ","
+    !local $sub = %substr($cause, 0, $minpos($cause))
+
+    ' Add agent type model as input
+    !if ($draft != "")
+      agent "$sub" as $replace($sub)
+    !endif
+
+    ' Decide connection direction
+    $replace($result) <-- $replace($sub)
+
+    ' Update $cause
+    !$cause = %substr($cause, $minpos($cause) + 1)
+  !endwhile
+
+  !if (%strlen($cause) != 0)
+    !if ($draft != "")
+      agent "$cause" as $replace($cause)
+    !endif
+
+    ' last element
+    $replace($result) <-- $replace($cause)
+  !endif
+!endprocedure
+
+' Evaporating cloud(head)
+' [in] $mission   The mission of the cloud
+!procedure $head($mission)
+  agent "$mission" as head
+!endprocedure
+
+' Evaporating cloud(shoulder-hand)
+' [in] $mission   The mission of the cloud
+!procedure $shoulder_hand($shoulder, $hand, $left_right)
+  agent "$shoulder" as $left_right##_shoulder
+  agent "$hand" as $left_right##_hand
+  head <-- $left_right##_shoulder
+  $left_right##_shoulder <-- $left_right##_hand
+!endprocedure
+
+' Evaporating cloud(right)
+' [in] $mission   The mission of the cloud
+!procedure $right($shoulder, $hand)
+  $shoulder_hand($shoulder, $hand, "right")
+!endprocedure
+
+' Evaporating cloud(left)
+' [in] $mission   The mission of the cloud
+!procedure $left($shoulder, $hand)
+  $shoulder_hand($shoulder, $hand, "left")
+!endprocedure
+
+' Evaporating cloud(connect)
+' [in] $mission   The mission of the cloud
+!procedure $connect()
+  left_hand <=> right_hand #red
+  left_shoulder <.. right_hand #Blue
+  right_shoulder <.. left_hand #Blue
+  left_hand .. left_note
+  right_hand .. right_note
+  left_ob .r. left_shoulder
+  left_ob .. left_hand
+  right_ob .l. right_shoulder
+  right_ob .. right_hand
+  left_bm .r. head
+  left_bm .. left_shoulder
+  right_bm .l. head
+  right_bm .. right_shoulder
+
+!endprocedure
+
+!procedure $a($assumptions="")
+  !if %strlen($assumptions) > 0
+  note as hoge
+  $assumptions
+  end note
+  !endif
+!endprocedure
+
+' numbering
+' Increment global variable unique_no.
+' Because alias should not include symbol etc.
+' [ret] incremented no.
+!$unique_no = 0
+!function $numbering()
+  !$unique_no = $unique_no + 1
+  !return $unique_no
+!endfunction
+
+' Entity for CRT etc.
+' [in] $entity    Specify entity string
+' [in] $color     Color of entity. default to "".
+!procedure $e($entity, $color="")
+' count up even if " " entiry specified
+!local $number = $numbering()
+
+!local $form = ""
+!if $is_cloud($entity)
+  !$form = cloud
+  ' Remove prefix "c:"
+  !$entity = %substr($entity, 2)
+!else
+  !$form = class
+!endif
+' Add newline
+!$entity = $newline_formatter($entity)
+!if (%strlen($entity) > 0) && ($entity != " ")
+  !if $numbered == 1
+    ' Output numbered entiry
+    !if $color != ""
+      $form "$number##.##$entity" as $number #$color
+    !else
+      $form "$number##.##$entity" as $number
+    !endif
+  !else
+    ' Output non-numbered entiry
+    !if $color != ""
+      $form "$entity" as $number #$color
+    !else
+      $form "$entity" as $number
+    !endif
+  !endif
+!endif
+!endprocedure
+
+' Entities parser for CRT etc.
+' [in] $entities  List of entities separated by ",".
+!procedure $entities($entities)
+hide circle
+hide empty members
+hide method
+skinparam groupInheritance 2
+skinparam class {
+    backgroundcolor #white
+    bordercolor #black
+}
+!local $comma_splitted_list = %splitstr($entities, ",")
+
+' Split string by "," to get entity
+!foreach $comma_splitted in $comma_splitted_list
+  ' Split string by "#" to get entity color
+  !local $sharp_splitted_list = %splitstr($comma_splitted, "#")
+  !local $title = ""
+  !local $color = ""
+
+  ' Separate title and color
+  $separate($comma_splitted, "#")
+  !$title = $left_side
+  !$color = $right_side
+
+  $e($title, $color)
+!endfor
+' Reset unique No
+!$unique_no = 0
+!endprocedure
+
+' Relations parser for CRT etc.
+' [in] $result_and_causes  List of result and causes separated by ",".
+'                          Each result and causes should be "1 < 2 3".
+'                          1: result, 2, 3: causes (separated by < or >)
+!procedure $connect_result_from_causes($result_and_causes)
+!local $result_and_cause_list = %splitstr($result_and_causes, ",")
+
+' Start from 1 because 0 use to judge char
+!local $param_num = 1
+!foreach $result_and_cause in $result_and_cause_list
+  ' Split result and causes
+  !local $results = ""
+  !local $causes = ""
+  !if %strpos($result_and_cause, ">") >= 0
+    $separate($result_and_cause, ">")
+    !$results = $right_side
+    !$causes = $left_side
+  !endif
+  !if %strpos($result_and_cause, "<") >= 0
+    $separate($result_and_cause, "<")
+    !$results = $left_side
+    !$causes = $right_side
+  !endif
+
+  ' Split results
+  !local $result_list = %splitstr($results, " ")
+  !foreach $result in $result_list
+    ' Split causes
+    !local $cause_list = %splitstr($causes, " ")
+    !foreach $cause in $cause_list
+      !local $final_letter = %substr($cause, %strlen($cause)-1, 1)
+      !if (%intval($final_letter) == 0) && ($final_letter != 0)
+        ' Final letter is character (AND connection via usecase)
+        !local $cause_num = %substr($cause, 0, %strlen($cause)-1)
+        $banana($param_num, $final_letter)
+        $param_num##$final_letter <-- $cause_num
+        $result <-- $param_num##$final_letter
+      !else
+        ' Normal connection
+        $result <-- $cause
+      !endif
+    !endfor
+  !endfor
+  !local $param_num = $param_num + 1
+!endfor
+!endprocedure
+
+' Process definition with numbered aliaces
+' [in] inout_aliaces input/output entity aliaces that separated by ">" or "<" and space.
+' [in] process Process name (with color specification)
+!procedure $p($inout_aliaces, $process)
+  ' Define process as usecase
+  !local $title = ""
+  !local $color = ""
+  ' Increment number
+  !local $number = $numbering()
+  !if %strpos($process, "#") >= 0
+    $separate($process, "#")
+    !$title = $left_side
+    !$color = $right_side
+    !$title = $newline_formatter($title)
+    !if $numbered == 1
+      usecase "p##$number##.##$title" as p##$number #$color
+    !else
+      usecase "$title" as p##$number #$color
+    !endif
+  !else
+    !$title = $process
+    !$title = $newline_formatter($title)
+    !if $numbered == 1
+      usecase "p##$number##.##$title" as p##$number
+    !else
+      usecase "$title" as p##$number
+    !endif
+  !endif
+  !local $inputs = ""
+  !local $outputs = ""
+  !if %strpos($inout_aliaces, ">") >= 0
+    $separate($inout_aliaces, ">")
+    !$inputs = $left_side
+    !$outputs = $right_side
+  !endif
+  !if %strpos($inout_aliaces, "<") >= 0
+    $separate($inout_aliaces, "<")
+    !$inputs = $right_side
+    !$outputs = $left_side
+  !endif
+
+  ' Connect inputs to process
+  !local $input_list = %splitstr($inputs, " ")
+  !foreach $input in $input_list
+    $input --> p##$number
+  !endfor
+
+  ' Connect process to outputs
+  !local $output_list = %splitstr($outputs, " ")
+  !foreach $output in $output_list
+    p##$number --> $output
+  !endfor
+!endprocedure
+
+' Global variables
+!$left_side = ""
+!$right_side = ""
+' Separate string by separator and update global variables
+' [in] target Target string
+' [in] separator Separator
+' [out] left_side Left half of target string
+' [out] right_side Right half of target string
+!procedure $separate($target, $separator)
+  'Reset variables
+  !$left_side = ""
+  !$right_side = ""
+  !local $separated = %splitstr($target, $separator)
+  !local $counter = 0
+  !foreach $temp in $separated
+    !if $counter == 0
+      !$left_side = $temp
+    !else
+      !$right_side = $temp
+    !endif
+    !$counter = $counter + 1
+  !endfor
+!endprocedure
+
+' Insert newline to entity/process
+' [in] string Target string
+' return Target string (newline inserted)
+!function $newline_formatter($string)
+  !local $formatted_string = ""
+  !if $newline_at_space == 1
+    !local $separated_array = %splitstr($string, " ")
+    !local $chunk = ""
+    !foreach $word in $separated_array
+      !$chunk = $chunk + " " + $word
+      !if %strlen($chunk) >= $target_length
+        !$formatted_string = $formatted_string + $chunk
+        !$chunk = "\n"
+      !endif
+    !endfor
+    !if $chunk != "\n"
+      !$formatted_string = $formatted_string + $chunk
+    !endif
+  !else
+    !local $start_pos = 0
+    !while $start_pos <= %strlen($string) -1
+      !if $formatted_string != ""
+        !$formatted_string = $formatted_string + "\n"
+      !endif
+      !$formatted_string = $formatted_string + %substr($string, $start_pos, $target_length)
+      !$start_pos = $start_pos + $target_length
+    !endwhile
+  !endif
+  !return $formatted_string
+!endfunction
+
+' Banana for CRT etc.
+' [in] $param_num  Specify nested level (parameter)
+' [in] $sub        Specify name of banana (one character)
+!procedure $banana($param_num, $sub="")
+!if $numbered == 1
+  ' Output numbered entiry
+  usecase "$sub" as $param_num##$sub
+!else
+  ' Output non-numbered entiry
+  usecase " " as $param_num##$sub
+!endif
+!endprocedure
+
+@enduml
