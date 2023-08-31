@@ -93,6 +93,8 @@ allowmixing
     !endif
     !$title_flag = %not($title_flag)
   !endfor
+  ' Reset unique No
+  !$unique_no = 0
 !endprocedure
 
 ' block
@@ -109,9 +111,9 @@ allowmixing
     !local $number = $numbering()
     !$word = $newline_formatter($word)
     !if $color != ""
-      class "$number##.##$word" as $number <<block>> #$color
+      class "b##$number##.##$word" as b##$number <<block>> #$color
     !else
-      class "$number##.##$word" as $number <<block>>
+      class "b##$number##.##$word" as b##$number <<block>>
     !endif
   !endfor
 !endprocedure
