@@ -112,7 +112,7 @@ allowmixing
     !$color = $right_side
 
     !local $number = $numbering()
-    !if (%substr($title, 0, 1) == " ")
+    !if (%substr($word, 0, 1) == " ")
       ' Skip
     !else
       !$word = $newline_formatter($word)
