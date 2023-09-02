@@ -147,6 +147,40 @@
     ],
     "description": "CRT template"
   },
+  "REQ template": {
+    "prefix": "req",
+    "body": [
+      "```puml",
+      "!include ./include/req_tool.pu",
+      "!\\$numbered = 1",
+      "!\\$target_length = 15",
+      "!\\$newline_at_space = 1",
+      "!\\$detailed = 1",
+      "skinparam linetype polyline",
+      "skinparam linetype ortho",
+      "skinparam nodesep 20",
+      "skinparam ranksep 40",
+      "",
+      "\\$req(\"\\",
+      "$1RequirementA#pink,Detailed description...,\\",
+      "$2RequirementB, ,\\",
+      "$3RequirementC, ,\\",
+      "$3RequirementD, ,\\",
+      "\")",
+      "",
+      "\\$block(\"\\",
+      "$1ImplementAlpha,\\",
+      "\")",
+      "",
+      "\\$connect_req(\"\\",
+      "2 3 + 1,\\",
+      "4 d 2,\\",
+      "5 s 3,\\",
+      "\")",
+      "```"
+    ],
+    "description": "REQ template"
+  },
   "evaporating_cloud": {
     "prefix": "cloud",
     "body": [
