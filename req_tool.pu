@@ -65,7 +65,6 @@ allowmixing
       $separate($word, "#")
       !$word = $left_side
       !$color = $right_side
-
       !local $title = $newline_formatter($word)
     !else
       ' $word is text
@@ -73,21 +72,25 @@ allowmixing
     !endif
     !if ($title_flag == %false())
       !local $number = $numbering()
-      !if ($detailed == 1)
-        !if $color != ""
-          class "$number##.##$title" as $number <<requirement>> #$color {
-            {field}text=$text
-          }
-        !else
-          class "$number##.##$title" as $number <<requirement>> {
-            {field}text=$text
-          }
-        !endif
+      !if (%substr($title, 0, 1) == " ")
+        ' Skip output
       !else
-        !if $color != ""
-          class "$number##.##$title" as $number <<requirement>> #$color
+        !if ($detailed == 1)
+          !if $color != ""
+            class "$number##.##$title" as $number <<requirement>> #$color {
+              {field}text=$text
+            }
+          !else
+            class "$number##.##$title" as $number <<requirement>> {
+              {field}text=$text
+            }
+          !endif
         !else
-          class "$number##.##$title" as $number <<requirement>>
+          !if $color != ""
+            class "$number##.##$title" as $number <<requirement>> #$color
+          !else
+            class "$number##.##$title" as $number <<requirement>>
+          !endif
         !endif
       !endif
     !endif
@@ -109,13 +112,19 @@ allowmixing
     !$color = $right_side
 
     !local $number = $numbering()
-    !$word = $newline_formatter($word)
-    !if $color != ""
-      class "b##$number##.##$word" as b##$number <<block>> #$color
+    !if (%substr($title, 0, 1) == " ")
+      ' Skip
     !else
-      class "b##$number##.##$word" as b##$number <<block>>
+      !$word = $newline_formatter($word)
+      !if $color != ""
+        class "b##$number##.##$word" as b##$number <<block>> #$color
+      !else
+        class "b##$number##.##$word" as b##$number <<block>>
+      !endif
     !endif
   !endfor
+  ' Reset unique No
+  !$unique_no = 0
 !endprocedure
 
 ' Relations parser for Requirement diagram.
