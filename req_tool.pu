@@ -214,14 +214,17 @@ allowmixing
     !local $separated_array = %splitstr($string, " ")
     !local $chunk = ""
     !foreach $word in $separated_array
-      !$chunk = $chunk + " " + $word
+      !$chunk = $chunk + $word + " "
       !if %strlen($chunk) >= $target_length
-        !$formatted_string = $formatted_string + $chunk
-        !$chunk = "\n"
+        !$formatted_string = $formatted_string + $chunk + "\n"
+        !$chunk = ""
       !endif
     !endfor
-    !if $chunk != "\n"
+    !if $chunk != ""
       !$formatted_string = $formatted_string + $chunk
+    !else
+      ' Remove useless newline at the end
+      !$formatted_string = %substr($formatted_string, 0, %strlen($formatted_string)-2)
     !endif
   !else
     !local $start_pos = 0
