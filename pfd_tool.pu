@@ -425,31 +425,34 @@ allowmixing
 !procedure $e($entity, $color="")
 ' count up even if " " entiry specified
 !local $number = $numbering()
-
-!local $form = ""
-!if $is_cloud($entity)
-  !$form = cloud
-  ' Remove prefix "c:"
-  !$entity = %substr($entity, 2)
+!if (%substr($entity, 0, 1) == " ")
+  ' Skip
 !else
-  !$form = class
-!endif
-' Add newline
-!$entity = $newline_formatter($entity)
-!if (%strlen($entity) > 0) && ($entity != " ")
-  !if $numbered == 1
-    ' Output numbered entiry
-    !if $color != ""
-      $form "$number##.##$entity" as $number #$color
-    !else
-      $form "$number##.##$entity" as $number
-    !endif
+  !local $form = ""
+  !if $is_cloud($entity)
+    !$form = cloud
+    ' Remove prefix "c:"
+    !$entity = %substr($entity, 2)
   !else
-    ' Output non-numbered entiry
-    !if $color != ""
-      $form "$entity" as $number #$color
+    !$form = class
+  !endif
+  ' Add newline
+  !$entity = $newline_formatter($entity)
+  !if (%strlen($entity) > 0) && ($entity != " ")
+    !if $numbered == 1
+      ' Output numbered entiry
+      !if $color != ""
+        $form "$number##.##$entity" as $number #$color
+      !else
+        $form "$number##.##$entity" as $number
+      !endif
     !else
-      $form "$entity" as $number
+      ' Output non-numbered entiry
+      !if $color != ""
+        $form "$entity" as $number #$color
+      !else
+        $form "$entity" as $number
+      !endif
     !endif
   !endif
 !endif
