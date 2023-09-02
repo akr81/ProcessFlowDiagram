@@ -658,4 +658,33 @@ skinparam class {
 !endif
 !endprocedure
 
+' Injection
+' Procedure for injection for FRT
+!procedure $injection($injections)
+  ' Separate $requirements to (title, text) list
+  !local $word_list = %splitstr($injections, ",")
+  !foreach $word in $word_list
+    !local $color = ""
+    $separate($word, "#")
+    !$word = $left_side
+    !$color = $right_side
+
+    !local $number = $numbering()
+    !if (%substr($word, 0, 1) == " ")
+      ' Skip
+    !else
+      !$word = $newline_formatter($word)
+      !if $color != ""
+        class "i##$number##.##$word" as i##$number <<Injection>> #$color
+      !else
+        class "i##$number##.##$word" as i##$number <<Injection>>
+      !endif
+    !endif
+  !endfor
+  ' Reset unique No
+  !$unique_no = 0
+!endprocedure
+
+
+
 @enduml
