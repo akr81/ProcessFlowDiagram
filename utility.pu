@@ -113,4 +113,74 @@ allowmixing
   !endif
 !endfunction
 
+' Entities parser for CRT etc.
+' [in] $entities  List of entities separated by ",".
+!procedure $entities($entities)
+hide circle
+hide empty members
+hide method
+skinparam groupInheritance 2
+skinparam class {
+    backgroundcolor #white
+    bordercolor #black
+}
+!local $comma_splitted_list = %splitstr($entities, ",")
+
+' Split string by "," to get entity
+!foreach $comma_splitted in $comma_splitted_list
+  ' Split string by "#" to get entity color
+  !local $sharp_splitted_list = %splitstr($comma_splitted, "#")
+  !local $title = ""
+  !local $color = ""
+
+  ' Separate title and color
+  $separate($comma_splitted, "#")
+  !$title = $left_side
+  !$color = $right_side
+
+  $e($title, $color)
+!endfor
+' Reset unique No
+!$unique_no = 0
+!endprocedure
+
+' Entity for CRT etc.
+' [in] $entity    Specify entity string
+' [in] $color     Color of entity. default to "".
+!procedure $e($entity, $color="")
+' count up even if " " entiry specified
+!local $number = $numbering()
+!if (%substr($entity, 0, 1) == " ")
+  ' Skip
+!else
+  !local $form = ""
+  !if $is_cloud($entity)
+    !$form = cloud
+    ' Remove prefix "c:"
+    !$entity = %substr($entity, 2)
+  !else
+    !$form = class
+  !endif
+  ' Add newline
+  !$entity = $newline_formatter($entity)
+  !if (%strlen($entity) > 0) && ($entity != " ")
+    !if $numbered == 1
+      ' Output numbered entiry
+      !if $color != ""
+        $form "$number##.##$entity" as $number #$color
+      !else
+        $form "$number##.##$entity" as $number
+      !endif
+    !else
+      ' Output non-numbered entiry
+      !if $color != ""
+        $form "$entity" as $number #$color
+      !else
+        $form "$entity" as $number
+      !endif
+    !endif
+  !endif
+!endif
+!endprocedure
+
 @enduml
