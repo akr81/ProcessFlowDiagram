@@ -124,7 +124,7 @@
     "prefix": "crt",
     "body": [
       "```puml",
-      "!include ./include/pfd_tool.pu",
+      "!include ./include/crt_tool.pu",
       "!\\$numbered = 1",
       "!\\$target_length = 15",
       "!\\$newline_at_space = 0",
@@ -185,7 +185,7 @@
     "prefix": "cloud",
     "body": [
       "```puml",
-      "!include ../include/pfd_tool.pu",
+      "!include ../include/ec_tool.pu",
       "!\\$space_delimiter = 1",
       "left to right direction",
       "skinparam nodesep 20",

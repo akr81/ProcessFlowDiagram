@@ -1,5 +1,5 @@
 ```puml
-!include ../ProcessFlowDiagram/pfd_tool.pu
+!include ../ProcessFlowDiagram/crt_tool.pu
 !$numbered = 1
 !$target_length = 15
 !$newline_at_space = 0
