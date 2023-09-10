@@ -101,6 +101,16 @@ allowmixing
   !return $formatted_string
 !endfunction
 
-
+' is_cloud
+' Judge specified string meet the condition of cloud element
+' [in] string
+' [ret] true: string is cloud element, false: string is NOT cloud element
+!function $is_cloud($string)
+  !if %strpos($string, "c:") == 0
+    !return %true()
+  !else
+    !return %false()
+  !endif
+!endfunction
 
 @enduml
