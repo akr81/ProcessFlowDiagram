@@ -43,5 +43,30 @@ allowmixing
   !return $unique_no
 !endfunction
 
+' Global variables for separate
+!$left_side = ""
+!$right_side = ""
+' Separate string by separator and update global variables
+' [in] target Target string
+' [in] separator Separator
+' [out] left_side Left half of target string
+' [out] right_side Right half of target string
+!procedure $separate($target, $separator)
+  'Reset variables
+  !$left_side = ""
+  !$right_side = ""
+  !local $separated = %splitstr($target, $separator)
+  !local $counter = 0
+  !foreach $temp in $separated
+    !if $counter == 0
+      !$left_side = $temp
+    !else
+      !$right_side = $temp
+    !endif
+    !$counter = $counter + 1
+  !endfor
+!endprocedure
+
+
 
 @enduml
