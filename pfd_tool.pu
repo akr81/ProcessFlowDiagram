@@ -310,60 +310,6 @@
   !endif
 !endprocedure
 
-' Evaporating cloud(head)
-' [in] $mission   The mission of the cloud
-!procedure $head($mission)
-  agent "$mission" as head
-!endprocedure
-
-' Evaporating cloud(shoulder-hand)
-' [in] $mission   The mission of the cloud
-!procedure $shoulder_hand($shoulder, $hand, $left_right)
-  agent "$shoulder" as $left_right##_shoulder
-  agent "$hand" as $left_right##_hand
-  head <-- $left_right##_shoulder
-  $left_right##_shoulder <-- $left_right##_hand
-!endprocedure
-
-' Evaporating cloud(right)
-' [in] $mission   The mission of the cloud
-!procedure $right($shoulder, $hand)
-  $shoulder_hand($shoulder, $hand, "right")
-!endprocedure
-
-' Evaporating cloud(left)
-' [in] $mission   The mission of the cloud
-!procedure $left($shoulder, $hand)
-  $shoulder_hand($shoulder, $hand, "left")
-!endprocedure
-
-' Evaporating cloud(connect)
-' [in] $mission   The mission of the cloud
-!procedure $connect()
-  left_hand <=> right_hand #red
-  left_shoulder <.. right_hand #Blue
-  right_shoulder <.. left_hand #Blue
-  left_hand .. left_note
-  right_hand .. right_note
-  left_ob .r. left_shoulder
-  left_ob .. left_hand
-  right_ob .l. right_shoulder
-  right_ob .. right_hand
-  left_bm .r. head
-  left_bm .. left_shoulder
-  right_bm .l. head
-  right_bm .. right_shoulder
-
-!endprocedure
-
-!procedure $a($assumptions="")
-  !if %strlen($assumptions) > 0
-  note as hoge
-  $assumptions
-  end note
-  !endif
-!endprocedure
-
 ' Entity for CRT etc.
 ' [in] $entity    Specify entity string
 ' [in] $color     Color of entity. default to "".
