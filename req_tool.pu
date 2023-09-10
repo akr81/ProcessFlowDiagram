@@ -1,54 +1,26 @@
 @startuml
-' Color setting
+!include ./include/utility.pu
+
+' Class setting
 hide circle
 hide empty members
 hide method
-skinparam usecase {
-BackgroundColor White
-ArrowColor Black
-BorderColor Black
-FontSize 12
-}
+
+' Color setting
 skinparam class {
-BackgroundColor White
-ArrowColor Black
-BorderColor Black
+  BackgroundColor White
+  ArrowColor Black
+  BorderColor Black
+}
+skinparam usecase {
+  FontSize 12
 }
 skinparam note {
-BackgroundColor White
-ArrowColor Black
-BorderColor Black
-FontSize 12
+  FontSize 12
 }
 allowmixing
 
-' Default delimiter
-' If you want to use other than "," as separator, please modify or overwrite this.
-!$default_delimiter = ","
-
-' Delimiter setting
-' If you familiar with English, It might be better not to use SPACE as delimiter.
-' 1: Use space as delimiter (default)
-' 0: Not use space as delimiter (comma only)
-!$space_delimiter = 1
-
-' Invalid constant
-' %strpos() returns -1 if not matched.
-' But this value seems not comparable value.
-!$invalid_value = 65535
-
-' Auto number to entities
-!$numbered = 1
-
-' Target length
-' Insert newline automatically.
-!$target_length = 1024
-
-' Newline at space
-' If 1, replace space to newline when current line length exceeded target_length.
-!$newline_at_space = 1
-
-' Display detail of not
+' Display detail or not
 !$detailed = 1
 
 ' req

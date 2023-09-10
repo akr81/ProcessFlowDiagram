@@ -1,25 +1,5 @@
 @startuml
-' Color setting
-skinparam agent {
-    backgroundcolor #white
-    bordercolor #black
-    ArrowColor #black
-}
-skinparam cloud {
-    backgroundcolor #white
-    bordercolor #black
-    ArrowColor #black
-}
-skinparam usecase {
-    backgroundcolor #white
-    bordercolor #black
-    ArrowColor #black
-}
-skinparam note {
-    BackgroundColor White
-    BorderColor Black
-}
-allowmixing
+!include ./include/utility.pu
 
 ' Default delimiter
 ' If you want to use other than "," as separator, please modify or overwrite this.
@@ -35,17 +15,6 @@ allowmixing
 ' %strpos() returns -1 if not matched.
 ' But this value seems not comparable value.
 !$invalid_value = 65535
-
-' Auto number to entities
-!$numbered = 1
-
-' Target length
-' Insert newline automatically.
-!$target_length = 1024
-
-' Newline at space
-' If 1, replace space to newline when current line length exceeded target_length.
-!$newline_at_space = 1
 
 ' d
 ' Procedure for PFD process in/out with draft mode
