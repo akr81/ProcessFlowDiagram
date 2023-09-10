@@ -378,16 +378,6 @@
   !endif
 !endprocedure
 
-' numbering
-' Increment global variable unique_no.
-' Because alias should not include symbol etc.
-' [ret] incremented no.
-!$unique_no = 0
-!function $numbering()
-  !$unique_no = $unique_no + 1
-  !return $unique_no
-!endfunction
-
 ' Entity for CRT etc.
 ' [in] $entity    Specify entity string
 ' [in] $color     Color of entity. default to "".

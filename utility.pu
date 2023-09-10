@@ -33,5 +33,15 @@ allowmixing
 ' If 1, replace space to newline when current line length exceeded target_length.
 !$newline_at_space = 1
 
+' numbering
+' Increment global variable unique_no.
+' Because alias should not include symbol etc.
+' [ret] incremented no.
+!$unique_no = 0
+!function $numbering()
+  !$unique_no = $unique_no + 1
+  !return $unique_no
+!endfunction
+
 
 @enduml
