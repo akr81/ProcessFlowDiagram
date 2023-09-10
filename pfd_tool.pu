@@ -549,40 +549,6 @@ skinparam class {
   !endfor
 !endprocedure
 
-' Insert newline to entity/process
-' [in] string Target string
-' return Target string (newline inserted)
-!function $newline_formatter($string)
-  !local $formatted_string = ""
-  !if $newline_at_space == 1
-    !local $separated_array = %splitstr($string, " ")
-    !local $chunk = ""
-    !foreach $word in $separated_array
-      !$chunk = $chunk + $word + " "
-      !if %strlen($chunk) >= $target_length
-        !$formatted_string = $formatted_string + $chunk + "\n"
-        !$chunk = ""
-      !endif
-    !endfor
-    !if $chunk != ""
-      !$formatted_string = $formatted_string + $chunk
-    !else
-      ' Remove useless newline at the end
-      !$formatted_string = %substr($formatted_string, 0, %strlen($formatted_string)-2)
-    !endif
-  !else
-    !local $start_pos = 0
-    !while $start_pos <= %strlen($string) -1
-      !if $formatted_string != ""
-        !$formatted_string = $formatted_string + "\n"
-      !endif
-      !$formatted_string = $formatted_string + %substr($string, $start_pos, $target_length)
-      !$start_pos = $start_pos + $target_length
-    !endwhile
-  !endif
-  !return $formatted_string
-!endfunction
-
 ' Banana for CRT etc.
 ' [in] $param_num  Specify nested level (parameter)
 ' [in] $sub        Specify name of banana (one character)
@@ -622,7 +588,5 @@ skinparam class {
   ' Reset unique No
   !$unique_no = 0
 !endprocedure
-
-
 
 @enduml
