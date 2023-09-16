@@ -1,5 +1,5 @@
 @startuml
-!include ./utility.pu
+!include utility.pu
 
 ' Evaporating cloud(head)
 ' [in] $mission   The mission of the cloud
