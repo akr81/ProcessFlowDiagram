@@ -1,5 +1,9 @@
 @startuml
+!if $online
+!include https://raw.githubusercontent.com/akr81/ProcessFlowDiagram/main/utility.pu
+!else
 !include ./utility.pu
+!endif
 
 ' Default delimiter
 ' If you want to use other than "," as separator, please modify or overwrite this.
