@@ -3,7 +3,7 @@
     "prefix": "pfd_old",
     "body": [
       "```puml",
-      "!include ./include/pfd_tool.pu",
+      "!include ./ProcessFlowDiagram/pfd_tool.pu",
       "!\\$space_delimiter = 1",
       "left to right direction",
       "skinparam linetype polyline",
@@ -55,7 +55,7 @@
     "prefix": "pfd",
     "body": [
       "```puml",
-      "!include ./include/pfd_tool.pu",
+      "!include ./ProcessFlowDiagram/pfd_tool.pu",
       "!\\$numbered = 1",
       "!\\$target_length = 15",
       "!\\$newline_at_space = 0",
@@ -124,7 +124,7 @@
     "prefix": "crt",
     "body": [
       "```puml",
-      "!include ./include/crt_tool.pu",
+      "!include ./ProcessFlowDiagram/crt_tool.pu",
       "!\\$numbered = 1",
       "!\\$target_length = 15",
       "!\\$newline_at_space = 0",
@@ -151,7 +151,7 @@
     "prefix": "req",
     "body": [
       "```puml",
-      "!include ./include/req_tool.pu",
+      "!include ./ProcessFlowDiagram/req_tool.pu",
       "!\\$numbered = 1",
       "!\\$target_length = 15",
       "!\\$newline_at_space = 1",
@@ -185,7 +185,7 @@
     "prefix": "cloud",
     "body": [
       "```puml",
-      "!include ../include/ec_tool.pu",
+      "!include ../ProcessFlowDiagram/ec_tool.pu",
       "!\\$space_delimiter = 1",
       "left to right direction",
       "skinparam nodesep 20",
