@@ -1,5 +1,7 @@
 @startuml
 
+!include <material/check>
+
 ' Color setting
 skinparam agent {
   backgroundcolor #white
@@ -113,6 +115,19 @@ allowmixing
   !endif
 !endfunction
 
+' is_cloud
+' Judge specified string meet the condition of cloud element
+' [in] string
+' [ret] true: string is cloud element, false: string is NOT cloud element
+!function $get_mark($entity)
+  !$mark = ""
+  !if %strpos($entity, "D:") == 0
+    !$mark = "<$ma_check,scale=0.5,color=green>"
+  !endif
+  !return $mark
+!endfunction
+
+
 ' Entities parser for CRT etc.
 ' [in] $entities  List of entities separated by ",".
 !procedure $entities($entities)
@@ -161,22 +176,28 @@ skinparam class {
   !else
     !$form = class
   !endif
+  ' Specify mark
+  !$mark = $get_mark($entity)
+  !if $mark != ""
+    ' Remove mark prefix "X:"
+    !$entity = %substr($entity, 2)
+  !endif
   ' Add newline
   !$entity = $newline_formatter($entity)
   !if (%strlen($entity) > 0) && ($entity != " ")
     !if $numbered == 1
       ' Output numbered entiry
       !if $color != ""
-        $form "$number##.##$entity" as $number #$color
+        $form "$mark##$number##.##$entity" as $number #$color
       !else
-        $form "$number##.##$entity" as $number
+        $form "$mark##$number##.##$entity" as $number
       !endif
     !else
       ' Output non-numbered entiry
       !if $color != ""
-        $form "$entity" as $number #$color
+        $form "$mark##$entity" as $number #$color
       !else
-        $form "$entity" as $number
+        $form "$mark##$entity" as $number
       !endif
     !endif
   !endif
