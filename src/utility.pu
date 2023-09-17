@@ -1,6 +1,8 @@
 @startuml
 
 !include <material/check>
+!include <material/close>
+!include <material/triangle_outline>
 
 ' Color setting
 skinparam agent {
@@ -123,6 +125,10 @@ allowmixing
   !$mark = ""
   !if %strpos($entity, "D:") == 0
     !$mark = "<$ma_check,scale=0.5,color=green>"
+  !elseif %strpos($entity, "N:") == 0
+    !$mark = "<$ma_close,scale=0.5,color=red>"
+  !elseif %strpos($entity, "T:") == 0
+    !$mark = "<$ma_triangle_outline,scale=0.5,color=orange>"
   !endif
   !return $mark
 !endfunction
