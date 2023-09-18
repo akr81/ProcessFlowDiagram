@@ -11,23 +11,30 @@ PlantUML + VSCode(またはObsidian)でプロセスフロー図(PFD)を描くた
 <!-- TOC -->
 
 - [ProcessFlowDiagram tool](#processflowdiagram-tool)
-    - [環境](#%E7%92%B0%E5%A2%83)
-    - [PlantUMLプロシージャ](#plantuml%E3%83%97%E3%83%AD%E3%82%B7%E3%83%BC%E3%82%B8%E3%83%A3)
-        - [entities](#entities)
-        - [p](#p)
-        - [connect_result_from_causes](#connect_result_from_causes)
-        - [プロシージャの設定](#%E3%83%97%E3%83%AD%E3%82%B7%E3%83%BC%E3%82%B8%E3%83%A3%E3%81%AE%E8%A8%AD%E5%AE%9A)
-            - [項目番号の表示/非表示](#%E9%A0%85%E7%9B%AE%E7%95%AA%E5%8F%B7%E3%81%AE%E8%A1%A8%E7%A4%BA%E9%9D%9E%E8%A1%A8%E7%A4%BA)
-            - [改行の自動挿入](#%E6%94%B9%E8%A1%8C%E3%81%AE%E8%87%AA%E5%8B%95%E6%8C%BF%E5%85%A5)
-        - [設定項目](#%E8%A8%AD%E5%AE%9A%E9%A0%85%E7%9B%AE)
-    - [VSCodeユーザスニペット/Obsidianテンプレート](#vscode%E3%83%A6%E3%83%BC%E3%82%B6%E3%82%B9%E3%83%8B%E3%83%9A%E3%83%83%E3%83%88obsidian%E3%83%86%E3%83%B3%E3%83%97%E3%83%AC%E3%83%BC%E3%83%88)
-    - [VSCodeユーザスニペット](#vscode%E3%83%A6%E3%83%BC%E3%82%B6%E3%82%B9%E3%83%8B%E3%83%9A%E3%83%83%E3%83%88)
-    - [使用イメージ](#%E4%BD%BF%E7%94%A8%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8)
-        - [注意点](#%E6%B3%A8%E6%84%8F%E7%82%B9)
-    - [使用イメージ](#%E4%BD%BF%E7%94%A8%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8)
-    - [制限事項](#%E5%88%B6%E9%99%90%E4%BA%8B%E9%A0%85)
-        - [記号の取り扱い](#%E8%A8%98%E5%8F%B7%E3%81%AE%E5%8F%96%E3%82%8A%E6%89%B1%E3%81%84)
+  - [環境](#環境)
+  - [使用方法](#使用方法)
+    - [PFD](#pfd)
+      - [include](#include)
+      - [entities](#entities)
+      - [p](#p)
+    - [CRT](#crt)
+      - [entities](#entities-1)
+      - [connect\_result\_from\_causes](#connect_result_from_causes)
+    - [プロシージャの設定](#プロシージャの設定)
+      - [項目番号の表示/非表示](#項目番号の表示非表示)
+      - [改行の自動挿入](#改行の自動挿入)
+    - [設定項目](#設定項目)
+  - [VSCodeユーザスニペット/Obsidianテンプレート](#vscodeユーザスニペットobsidianテンプレート)
+  - [VSCodeユーザスニペット](#vscodeユーザスニペット)
+  - [使用イメージ](#使用イメージ)
+    - [注意点](#注意点)
+  - [使用イメージ](#使用イメージ-1)
+  - [制限事項](#制限事項)
+    - [記号の取り扱い](#記号の取り扱い)
 
+<!-- /TOC -->
+
+<!-- /TOC -->
 <!-- /TOC -->
 
 ## 環境
@@ -41,102 +48,120 @@ PlantUML + VSCode(またはObsidian)でプロセスフロー図(PFD)を描くた
 (*) プラグインに同梱されているplantuml.jarが古い場合、プロシージャが利用している関数が実装されていないためエラーとなります。  
 [PlantUMLのサイト](https://plantuml.com/ja/download)からplantuml.jarを入手し、プラグイン設定で指定するなどしてください。
 
-## PlantUMLプロシージャ
-PFDを描くにあたって必要となる`プロセス`と`入出力(中間成果物)`との接続の記述を簡略化するためのものです。  
-`pfd_tool.pu`が定義ファイルにあたり、使用するには以下のように`include`を行う必要があります。
+## 使用方法
+
+### PFD
+
+PFDは`入出力(中間成果物)`(四角形)と`プロセス`(楕円)からなる図で、本プロシージャはその定義・接続の記述を簡略化するためのものです。
+
+![サンプル](http://www.plantuml.com/plantuml/png/HS_1IWCn483XUvuYJNkei6p8hWSfA3s8Pn-W8Ddis0wRJ48oG_7jZNhm-C_73CoviQyiAQeTKeYoWhunbtQojlhxU4M-oI8DQiZ4G3o6dApVwfEpxpK7QEqjvlih-clroIQFPCld-i4vnx68Khi3ILgWmggVjLFgq6yW8xIZkIWaDrnKE25Dmq_D-uAq_OwoyBvjNqiKw6qU-cOv6gSd_Q9dCsZJV2eHN9S_c3iy_iFKuGoqzi--0G00)
+
+上記サンプルを出力するための[サンプルコード](https://www.plantuml.com/plantuml/uml/HS-nQWCn383XtK_XEXrI26Tyrw5aA1bAvpv0e3W-DH5doyQI2NtxYdRe9AIFVz299NOP9Pi7f9J72lOcqlZeVO_twOfo6vV1q5Cb0P8frUBZrb-2_-Wr0VDxhlStZDSUYoyHoRUlzLDgpLCRnZngWuB0UtSsIE5mDkc8DEj4MdODQVizrI4xthulUO3kxadBjdV1plRLBkvW7SVICWILFrWKdlzXLZW1hVh93m00)をベースに説明します。
+
+#### include
+
+`pfd_tool.pu`に必要なプロシージャが定義されているため、まずはこのファイルをincludeする必要があります。
+
+(1)ローカルにダウンロードしたライブラリファイル(`pfd_lib.zip`)からincludeする場合と、(2)ネットワーク経由でincludeする場合の2通りがあります。  
+実行環境に応じた方を利用してください。
+
+(1)の場合
 ```
-!include PATH_TO_DIR/pfd_tool.pu
+!import PATH_TO_LIB/pfd_lib.zip
+!include pfd_tool.pu
 ```
 
-定義ファイルには以下のプロシージャが定義されています。
+(2)の場合
+```
+!include https://raw.githubusercontent.com/akr81/ProcessFlowDiagram/main/pfd_tool.pu
+```
 
-### entities
+#### entities
+
 ```
 $entities("入出力1,入出力2,...")
 ```
+
 PFDを構成する入出力((中間)成果物)を、","区切りで定義します。  
-定義した順にエイリアスとして`連番`が付与されます(下画像のように、`連番`つきで表示されます。非表示にしたい場合は、[項目番号の表示/非表示](#%E9%A0%85%E7%9B%AE%E7%95%AA%E5%8F%B7%E3%81%AE%E8%A1%A8%E7%A4%BA%E9%9D%9E%E8%A1%A8%E7%A4%BA)を参照してください)。
+**定義した順**にエイリアスとして`連番`が付与され、サンプル画像のように標準では`連番`つきで表示されます。  
+(非表示にしたい場合は、[項目番号の表示/非表示](#%E9%A0%85%E7%9B%AE%E7%95%AA%E5%8F%B7%E3%81%AE%E8%A1%A8%E7%A4%BA%E9%9D%9E%E8%A1%A8%E7%A4%BA)を参照してください)。
 
 各成果物について、以下の装飾をすることができます。
+
 - 先頭に`c:`を付与
   - 表示を雲形(cloud)とします。
 - 末尾に`#COLOR`を付与
   - 表示色を`COLOR`にします。
 
-[サンプル](https://www.plantuml.com/plantuml/uml/JSwnJiGm3CRnFKzHxXX0EZLSML2d3eYPDq1kObehYHt5ZYhUdWuCZD_lM_wB6ZJh9Ri7uf1xn64tgpfxt-0ODxAzhrsn1M53jZ58yP3Qszr_DWce-f7bU2VO6XHVWDZNx_Xb8dcitMaYhd1U0qj4nJfCB_-m0QS_TEuHsSW8zUb2VB-5cNYw4RzUAt4wftIxQlfPSyVBirkGuvdz2m00)
-```
-$entities("in1,c:in2,in3#pink,c:out#skyblue")
-```
-![](image/2023-01-14-14-09-16.png)
+[サンプルコード](https://www.plantuml.com/plantuml/uml/3SwnZeCm303GFLzn1pVSIOY8wr8nCLIT-mTL22vO97OKsqBz-pA-xKsYeQhbvBwHOh85lZRL8gFtDHpzYhhPR08rCYcGzf6p3tkz3lvHEOB8FV5nmx3Ma7qEIBwybgSofxwOSpz0YeeWlmtIqCKHwRz3khG5QJ_9fgtixpaPD7zk0bhEomS0)
 
-### p
+![サンプル](https://www.plantuml.com/plantuml/png/3SwnZeCm303GFLzn1pVSIOY8wr8nCLIT-mTL22vO97OKsqBz-pA-xKsYeQhbvBwHOh85lZRL8gFtDHpzYhhPR08rCYcGzf6p3tkz3lvHEOB8FV5nmx3Ma7qEIBwybgSofxwOSpz0YeeWlmtIqCKHwRz3khG5QJ_9fgtixpaPD7zk0bhEomS0)
+
+
+#### p
+
 ```
 $p("入力1 入力2 > 出力", "プロセス名")
 ```
+
 プロセスを定義し、定義済みの入出力とプロセスを接続します。  
-`>`の左側が入力、右側が出力として扱われます。  
-こちらも定義した順にエイリアスとして`p連番`が付与されます。
+入力・出力には`entities`で付与されたエイリアスを使用することができ、`>`の左側が入力、右側が出力として扱われます。  
+こちらも**定義した順**にエイリアスとして`p連番`が付与されます。
 
 プロセスについても、`$entities`と同様に表示色を設定することができます。
 
-[サンプル](https://www.plantuml.com/plantuml/uml/JS-nJiCm4CRnFKzXt0v5YcAICA0Eg0DYvWtGrJdQa-spvJkhuktnWA3Zz_zDtqaKghOKXmTY7zk6vgfQvEXSXTjq8RssSnEiFhCYw-HpSX3go-m-QlOeyXxpxOtWKY6v1CIkV6sVcdESIXia41VeP3XlA5ZCydGNAt3uZSCUMKa9vM29vz4VYPUHUDqLuj1dRhgJy7sE3UtZi2y7Evl5l9hLZiOAf19n_eErm_C_B1s64_BMZ_u0)
-```
-$entities("in1,c:in2,in3#pink,c:out#skyblue")
-$p("1 2 > 3", "sample1")
-$p("1 3 > 4", "sample2")
-```
-![](image/2023-01-14-14-15-34.png)
+[サンプルコード](https://www.plantuml.com/plantuml/uml/JS-nJiCm4CRnFKzXt0v5YcAICA0Eg0DYvWtGrJdQa-spvJkhuktnWA3Zz_zDtqaKghOKXmTY7zk6vgfQvEXSXTjq8RssSnEiFhCYw-HpSX3go-m-QlOeyXxpxOtWKY6v1CIkV6sVcdESIXia41VeP3XlA5ZCydGNAt3uZSCUMKa9vM29vz4VYPUHUDqLuj1dRhgJy7sE3UtZi2y7Evl5l9hLZiOAf19n_eErm_C_B1s64_BMZ_u0)
 
-### connect_result_from_causes
+![サンプル](https://www.plantuml.com/plantuml/png/JS-nJiCm4CRnFKzXt0v5YcAICA0Eg0DYvWtGrJdQa-spvJkhuktnWA3Zz_zDtqaKghOKXmTY7zk6vgfQvEXSXTjq8RssSnEiFhCYw-HpSX3go-m-QlOeyXxpxOtWKY6v1CIkV6sVcdESIXia41VeP3XlA5ZCydGNAt3uZSCUMKa9vM29vz4VYPUHUDqLuj1dRhgJy7sE3UtZi2y7Evl5l9hLZiOAf19n_eErm_C_B1s64_BMZ_u0)
+
+
+### CRT
+
+原因と結果を因果で表すCRT(現状ツリー)風の図を描くために使用します。
+
+[サンプルコード](https://www.plantuml.com/plantuml/uml/DSonJiCm4CRntKzX2WD8A5RQj48Cg4DXPc6h51tNexLgtqNdi_hwEA1Ctt_uzDiN0xMQaxkBZAcUo5_Cfl8QWiAjEqUxrEzQI57OYAr3oG6k-jA7JnMaKZwIt0uHpWevP8WSK6qqaTHDrRa7OeiMgJokZkxhy7u_HRu-7nr2G_ibrajibXYMsBPOFJK8XPdGHgLIauq_AdcS7__q6lm6_03-pS_gjksCxjeEVZRwLhi_QazygZdz0W00)
+
+![サンプル](https://www.plantuml.com/plantuml/png/DSonJiCm4CRntKzX2WD8A5RQj48Cg4DXPc6h51tNexLgtqNdi_hwEA1Ctt_uzDiN0xMQaxkBZAcUo5_Cfl8QWiAjEqUxrEzQI57OYAr3oG6k-jA7JnMaKZwIt0uHpWevP8WSK6qqaTHDrRa7OeiMgJokZkxhy7u_HRu-7nr2G_ibrajibXYMsBPOFJK8XPdGHgLIauq_AdcS7__q6lm6_03-pS_gjksCxjeEVZRwLhi_QazygZdz0W00)
+
+#### entities
+
+PFDの場合と同様です。
+
+#### connect_result_from_causes
+
 ```
 $connect_result_from_causes("原因1 原因2 > 結果1, 原因3 原因4 > 結果2")
 ```
-PFDではなく、CRT(現状ツリー)風のツリーを描くために使用します。  
-`$entity`で定義された要素を原因/結果として、それぞれを接続します。
 
-[サンプル](https://www.plantuml.com/plantuml/uml/JSpFIWCn4CVnUvvYh1uKPEDk_o0YqaFrxCLROOdPQHiscOJCX7rzi-f2J_doI_BPivWi9NXruyZwCY1SH1A_Q9tDr9oTNCftOSmsaY19OsFGPipFhVxCqIBpXu_JmPbpDa47uqYdqz1BZBv9HV7eA9bw1HG7P4pGFLsDsT3uFwgxgZjnoFUhe_ewlDycH-FZKLbJ6DibkYNMIsoMsDPOFLJ8HYAqqcVaugK_vHZw-SKVtS8hTB26-TyMtc0MT_NSm0oqjNQ_pXvfAC7_0000)
-```
-$entities("\
-UDE#pink,\
-cause1,\
-cause2,\
-cause3,\
-cause4,\
-cause5,\
-")
+`$entity`で定義された要素を原因/結果として接続し、因果関係を表します。
 
-$connect_result_from_causes("\
-1 < 2 3 4,\
-5 > 2,\
-6 > 4 5,\
-1 > 6\
-")
-```
-![](image/2023-01-14-14-42-50.png)
+接続にあたって、以下の装飾をすることができます。
+
+| 装飾方法 | 例 | 効果 |
+|---|---|---|
+| エイリアスの末尾にアルファベット1文字を付与 | 2a | 複数の原因をANDとして表す楕円を表示 |
+
 
 ### プロシージャの設定
-いずれもプロシージャファイルのinclude後、プロシージャの呼び出し前に設定する必要があります。
+いずれもinclude後、プロシージャの呼び出し前に設定する必要があります。
 
 #### 項目番号の表示/非表示
 `!$numbered = 0`と設定すると、定義された入出力とプロセスに付与された連番を非表示にすることができます。  
 
-[サンプル](https://www.plantuml.com/plantuml/uml/JSd1JWCX483XEqz1QGyrsIpTNG-cYQO7uzatC2oCxGGO23EayUtTWr6F__zTM5oJdfFQ8VdK0-YRIEMpjStTnolAhQ-TeVb20YIZBzcws9uc-zwA1-QtLEwlwAxDPPiTagsVuKDAIMFjYYDITHjfAW4OgfvF_sPp57-csXsevnKQ1FsiJ-e092W8V3H8q-3FIFE0jEmhKjooTDbp_5fJ1_EW3lLe9Zth5xsOGHjskIQOVc7PuF4FvWtK1IZqdBu1)
-```
-!$numbered = 0
-$entities("in1,c:in2,in3#pink,c:out#skyblue")
-$p("1 2 > 3", "sample1")
-$p("1 3 > 4", "sample2")
-```
-![](image/2023-01-14-14-50-43.png)
+[サンプルコード](https://www.plantuml.com/plantuml/uml/HScnJiCm403GtL_XkXcA5CKaOK2LG1qGCt-07ETeJx7FbkzE5NzF9Ze-lGjBQA8vcGDIJBg2lObKFdlVmdsuejnqKOOM2mcG3B5a7xRsElglLY8mVwPo_y1mRI7x791y_Lc_fPGqL3Ncq97c1Hgiziq-6zC12Ge2dnpIsCSpqjGZpSUAjEqiAaVUVfUau9vCLqzkj9DzjxFhhUEGQuBnF-OzNXunxN41MZMdFm00)
+
+![サンプル](https://www.plantuml.com/plantuml/png/HScnJiCm403GtL_XkXcA5CKaOK2LG1qGCt-07ETeJx7FbkzE5NzF9Ze-lGjBQA8vcGDIJBg2lObKFdlVmdsuejnqKOOM2mcG3B5a7xRsElglLY8mVwPo_y1mRI7x791y_Lc_fPGqL3Ncq97c1Hgiziq-6zC12Ge2dnpIsCSpqjGZpSUAjEqiAaVUVfUau9vCLqzkj9DzjxFhhUEGQuBnF-OzNXunxN41MZMdFm00)
+
 
 #### 改行の自動挿入
+
 `!$target_length = 任意の文字数`と設定すると、設定した文字数で各要素が改行されます。  
 `!$newline_at_space`(1または0)を同時に設定することによって、動作が変わります。
 
-|`$newline_at_space`の値|動作|
-|----|----|----|
-|1|設定した`$target_length`を超えた後、最初に現れた半角空白を改行に置き換えます。<br>(英語利用時に、単語の途中で改行されなくすることを意図しています)|
-|0|設定した`$target_length`ごとに改行が挿入されます。|
+| `$newline_at_space`の値 | 動作                                                                                                             |
+|------------------------|----------------------------------------------------------------------------------------------------------------|
+| 1                      | 設定した`$target_length`を超えた後、最初に現れた半角空白を改行に置き換えます。<br>(英語利用時に、単語の途中で改行されなくすることを意図しています) |
+| 0                      | 設定した`$target_length`ごとに改行が挿入されます。                                                                          |
 
 <details>
 <summary>以前の書き方の説明</summary>
@@ -203,14 +228,17 @@ PFDを描くにあたって必要となる、`入力`と`プロセス`、`プロ
 </details>
 
 ## 使用イメージ
+
 1. PFDテンプレートを使って、PFDを描き始めます。
 1. `$entities`に最終成果物から順に中間成果物を列挙します。
 1. `$p`で最終成果物と入力となる中間成果物を接続します。
 1. 2-3を必要なだけ繰り返します。
 
 ### 注意点
-`$entity`に記述した入出力が不要であることが途中で分かった場合、単純に削除してしまうとエイリアスの連番が変わってしまい、プロセスとの接続関係が意図しないものになってしまいます。  
-不要であることが分かってもそのまま残すか、半角スペース1つに置き換えることで対応するようにしてください。
+
+`$entities`に記述した入出力が不要であることが途中で分かった場合、単純に削除してしまうとエイリアスの連番が変わってしまい、プロセスとの接続関係が意図しないものになってしまいます。  
+その場合、先頭に半角スペース1つを入れることで、要素を非表示にすることができます。  
+(`$p`などで接続関係に指定されている場合はエイリアス名の要素として残ってしまうので、完全な対策ではありません)
 
 <details>
 <summary>以前の使用イメージ</summary>
