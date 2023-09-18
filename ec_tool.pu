@@ -1,5 +1,5 @@
 @startuml
-!include https://raw.githubusercontent.com/akr81/ProcessFlowDiagram/main/src/utility.pu
+!include https://raw.githubusercontent.com/akr81/ProcessFlowDiagram/main/utility.pu
 
 ' Evaporating cloud(head)
 ' [in] $mission   The mission of the cloud
