@@ -20,6 +20,10 @@ skinparam note {
 }
 allowmixing
 
+' Overwrite default sep
+skinparam nodesep 20
+skinparam ranksep 40
+
 ' Display detail or not
 !$detailed = 1
 

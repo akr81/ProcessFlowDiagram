@@ -26,6 +26,10 @@ skinparam note {
 }
 allowmixing
 
+' Default sep
+skinparam nodesep 20
+skinparam ranksep 20
+
 ' Auto number to entities
 !$numbered = 1
 
@@ -117,10 +121,10 @@ allowmixing
   !endif
 !endfunction
 
-' is_cloud
-' Judge specified string meet the condition of cloud element
-' [in] string
-' [ret] true: string is cloud element, false: string is NOT cloud element
+' get_mark
+' Get sprite setting from the first characters of element
+' [in] entity
+' [ret] sprite draw setting
 !function $get_mark($entity)
   !$mark = ""
   !if %strpos($entity, "D:") == 0
