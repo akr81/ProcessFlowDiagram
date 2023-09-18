@@ -1,13 +1,12 @@
 ```puml
-!include ../ProcessFlowDiagram/req_tool.pu
+!import ../ProcessFlowDiagram/pfd_lib.zip
+!include req_tool.pu
 !$numbered = 1
 !$target_length = 15
 !$newline_at_space = 1
 !$detailed = 1
 skinparam linetype polyline
 skinparam linetype ortho
-skinparam nodesep 20
-skinparam ranksep 40
 
 $req("\
 RequirementA#pink,Detailed description...,\
