@@ -54,6 +54,7 @@
 
   ' Split results
   !local $result_list = %splitstr($results, " ")
+  !local $cause_to_banana = 0
   !foreach $result in $result_list
     ' Split causes
     !local $cause_list = %splitstr($causes, " ")
@@ -63,13 +64,18 @@
         ' Final letter is character (AND connection via usecase)
         !local $cause_num = %substr($cause, 0, %strlen($cause)-1)
         $banana($param_num, $final_letter)
-        $param_num##$final_letter <-- $cause_num
+        ' (banana) <-- cause should be only once for each cause
+        !if $cause_to_banana == 0
+          $param_num##$final_letter <-- $cause_num
+        !endif
         $result <-- $param_num##$final_letter
       !else
         ' Normal connection
         $result <-- $cause
       !endif
     !endfor
+    ' cause to banana done
+    !$cause_to_banana = 1
   !endfor
   !local $param_num = $param_num + 1
 !endfor
