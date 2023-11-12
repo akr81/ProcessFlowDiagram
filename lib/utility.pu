@@ -1,6 +1,9 @@
 @startuml
 
-!include https://raw.githubusercontent.com/akr81/ProcessFlowDiagram/main/lib/<material/check>!include https://raw.githubusercontent.com/akr81/ProcessFlowDiagram/main/lib/<material/close>!include https://raw.githubusercontent.com/akr81/ProcessFlowDiagram/main/lib/<material/triangle_outline>
+!include <material/check>
+!include <material/close>
+!include <material/triangle_outline>
+
 ' Color setting
 skinparam agent {
   backgroundcolor #white
