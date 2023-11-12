@@ -1,0 +1,214 @@
+@startuml
+
+!include https://raw.githubusercontent.com/akr81/ProcessFlowDiagram/main/lib/<material/check>!include https://raw.githubusercontent.com/akr81/ProcessFlowDiagram/main/lib/<material/close>!include https://raw.githubusercontent.com/akr81/ProcessFlowDiagram/main/lib/<material/triangle_outline>
+' Color setting
+skinparam agent {
+  backgroundcolor #white
+  bordercolor #black
+  ArrowColor #black
+}
+skinparam cloud {
+  backgroundcolor #white
+  bordercolor #black
+  ArrowColor #black
+}
+skinparam usecase {
+  backgroundcolor #white
+  bordercolor #black
+  ArrowColor #black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+allowmixing
+
+' Default sep
+skinparam nodesep 20
+skinparam ranksep 20
+
+' Auto number to entities
+!$numbered = 1
+
+' Target length
+' Insert newline automatically.
+!$target_length = 1024
+
+' Newline at space
+' If 1, replace space to newline when current line length exceeded target_length.
+!$newline_at_space = 1
+
+' numbering
+' Increment global variable unique_no.
+' Because alias should not include symbol etc.
+' [ret] incremented no.
+!$unique_no = 0
+!function $numbering()
+  !$unique_no = $unique_no + 1
+  !return $unique_no
+!endfunction
+
+' Global variables for separate
+!$left_side = ""
+!$right_side = ""
+' Separate string by separator and update global variables
+' [in] target Target string
+' [in] separator Separator
+' [out] left_side Left half of target string
+' [out] right_side Right half of target string
+!procedure $separate($target, $separator)
+  'Reset variables
+  !$left_side = ""
+  !$right_side = ""
+  !local $separated = %splitstr($target, $separator)
+  !local $counter = 0
+  !foreach $temp in $separated
+    !if $counter == 0
+      !$left_side = $temp
+    !else
+      !$right_side = $temp
+    !endif
+    !$counter = $counter + 1
+  !endfor
+!endprocedure
+
+' Insert newline to entity/process
+' [in] string Target string
+' return Target string (newline inserted)
+!function $newline_formatter($string)
+  !local $formatted_string = ""
+  !if $newline_at_space == 1
+    !local $separated_array = %splitstr($string, " ")
+    !local $chunk = ""
+    !foreach $word in $separated_array
+      !$chunk = $chunk + $word + " "
+      !if %strlen($chunk) >= $target_length
+        !$formatted_string = $formatted_string + $chunk + "\n"
+        !$chunk = ""
+      !endif
+    !endfor
+    !if $chunk != ""
+      !$formatted_string = $formatted_string + $chunk
+    !else
+      ' Remove useless newline at the end
+      !$formatted_string = %substr($formatted_string, 0, %strlen($formatted_string)-2)
+    !endif
+  !else
+    !local $start_pos = 0
+    !while $start_pos <= %strlen($string) -1
+      !if $formatted_string != ""
+        !$formatted_string = $formatted_string + "\n"
+      !endif
+      !$formatted_string = $formatted_string + %substr($string, $start_pos, $target_length)
+      !$start_pos = $start_pos + $target_length
+    !endwhile
+  !endif
+  !return $formatted_string
+!endfunction
+
+' is_cloud
+' Judge specified string meet the condition of cloud element
+' [in] string
+' [ret] true: string is cloud element, false: string is NOT cloud element
+!function $is_cloud($string)
+  !if %strpos($string, "c:") == 0
+    !return %true()
+  !else
+    !return %false()
+  !endif
+!endfunction
+
+' get_mark
+' Get sprite setting from the first characters of element
+' [in] entity
+' [ret] sprite draw setting
+!function $get_mark($entity)
+  !$mark = ""
+  !if %strpos($entity, "D:") == 0
+    !$mark = "<$ma_check,scale=0.5,color=green>"
+  !elseif %strpos($entity, "N:") == 0
+    !$mark = "<$ma_close,scale=0.5,color=red>"
+  !elseif %strpos($entity, "T:") == 0
+    !$mark = "<$ma_triangle_outline,scale=0.5,color=orange>"
+  !endif
+  !return $mark
+!endfunction
+
+
+' Entities parser for CRT etc.
+' [in] $entities  List of entities separated by ",".
+!procedure $entities($entities)
+hide circle
+hide empty members
+hide method
+skinparam groupInheritance 2
+skinparam class {
+    backgroundcolor #white
+    bordercolor #black
+}
+!local $comma_splitted_list = %splitstr($entities, ",")
+
+' Split string by "," to get entity
+!foreach $comma_splitted in $comma_splitted_list
+  ' Split string by "#" to get entity color
+  !local $sharp_splitted_list = %splitstr($comma_splitted, "#")
+  !local $title = ""
+  !local $color = ""
+
+  ' Separate title and color
+  $separate($comma_splitted, "#")
+  !$title = $left_side
+  !$color = $right_side
+
+  $e($title, $color)
+!endfor
+' Reset unique No
+!$unique_no = 0
+!endprocedure
+
+' Entity for CRT etc.
+' [in] $entity    Specify entity string
+' [in] $color     Color of entity. default to "".
+!procedure $e($entity, $color="")
+' count up even if " " entiry specified
+!local $number = $numbering()
+!if (%substr($entity, 0, 1) == " ")
+  ' Skip
+!else
+  !local $form = ""
+  !if $is_cloud($entity)
+    !$form = cloud
+    ' Remove prefix "c:"
+    !$entity = %substr($entity, 2)
+  !else
+    !$form = class
+  !endif
+  ' Specify mark
+  !$mark = $get_mark($entity)
+  !if $mark != ""
+    ' Remove mark prefix "X:"
+    !$entity = %substr($entity, 2)
+  !endif
+  ' Add newline
+  !$entity = $newline_formatter($entity)
+  !if (%strlen($entity) > 0) && ($entity != " ")
+    !if $numbered == 1
+      ' Output numbered entiry
+      !if $color != ""
+        $form "$mark##$number##.##$entity" as $number #$color
+      !else
+        $form "$mark##$number##.##$entity" as $number
+      !endif
+    !else
+      ' Output non-numbered entiry
+      !if $color != ""
+        $form "$mark##$entity" as $number #$color
+      !else
+        $form "$mark##$entity" as $number
+      !endif
+    !endif
+  !endif
+!endif
+!endprocedure
+
+@enduml

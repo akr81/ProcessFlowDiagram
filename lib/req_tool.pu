@@ -1,0 +1,158 @@
+@startuml
+!include https://raw.githubusercontent.com/akr81/ProcessFlowDiagram/main/lib/utility.pu
+' Class setting
+hide circle
+hide empty members
+hide method
+
+' Color setting
+skinparam class {
+  BackgroundColor White
+  ArrowColor Black
+  BorderColor Black
+}
+skinparam usecase {
+  FontSize 12
+}
+skinparam note {
+  FontSize 12
+}
+allowmixing
+
+' Overwrite default sep
+skinparam nodesep 20
+skinparam ranksep 40
+
+' Display detail or not
+!$detailed = 1
+
+' req
+' Procedure for requirement
+!procedure $req($requirements)
+  ' Separate $requirements to (title, text) list
+  !local $word_list = %splitstr($requirements, ",")
+  !local $title_flag = %true()
+  !local $color = ""
+  !foreach $word in $word_list
+    !if ($title_flag == %true())
+      ' $word is title
+      ' Separate title and color
+      $separate($word, "#")
+      !$word = $left_side
+      !$color = $right_side
+      !local $title = $newline_formatter($word)
+    !else
+      ' $word is text
+      !local $text = $newline_formatter($word)
+    !endif
+    !if ($title_flag == %false())
+      !local $number = $numbering()
+      !if (%substr($title, 0, 1) == " ")
+        ' Skip output
+      !else
+        !if ($detailed == 1)
+          !if $color != ""
+            class "$number##.##$title" as $number <<requirement>> #$color {
+              {field}text=$text
+            }
+          !else
+            class "$number##.##$title" as $number <<requirement>> {
+              {field}text=$text
+            }
+          !endif
+        !else
+          !if $color != ""
+            class "$number##.##$title" as $number <<requirement>> #$color
+          !else
+            class "$number##.##$title" as $number <<requirement>>
+          !endif
+        !endif
+      !endif
+    !endif
+    !$title_flag = %not($title_flag)
+  !endfor
+  ' Reset unique No
+  !$unique_no = 0
+!endprocedure
+
+' block
+' Procedure for block
+!procedure $block($blocks)
+  ' Separate $requirements to (title, text) list
+  !local $word_list = %splitstr($blocks, ",")
+  !foreach $word in $word_list
+    !local $color = ""
+    $separate($word, "#")
+    !$word = $left_side
+    !$color = $right_side
+
+    !local $number = $numbering()
+    !if (%substr($word, 0, 1) == " ")
+      ' Skip
+    !else
+      !$word = $newline_formatter($word)
+      !if $color != ""
+        class "b##$number##.##$word" as b##$number <<block>> #$color
+      !else
+        class "b##$number##.##$word" as b##$number <<block>>
+      !endif
+    !endif
+  !endfor
+  ' Reset unique No
+  !$unique_no = 0
+!endprocedure
+
+' Relations parser for Requirement diagram.
+' [in] $result_and_causes  List of result and causes separated by ",".
+'                          Each result and causes should be "1 < 2 3".
+'                          1: result, 2, 3: causes (separated by < or >)
+!procedure $connect_req($result_and_causes)
+!local $result_and_cause_list = %splitstr($result_and_causes, ",")
+
+' Start from 1 because 0 use to judge char
+!local $param_num = 1
+!foreach $result_and_cause in $result_and_cause_list
+  ' Split result and causes
+  !local $results = ""
+  !local $causes = ""
+  !local $connector = ""
+  !local $kind = ""
+  !if %strpos($result_and_cause, "+") >= 0
+    $separate($result_and_cause, "+")
+    !$results = $right_side
+    !$causes = $left_side
+    !$connector = "+--"
+  !endif
+  !if %strpos($result_and_cause, "d") >= 0
+    $separate($result_and_cause, "d")
+    !$results = $right_side
+    !$causes = $left_side
+    !$connector = "<.."
+    !$kind = "<<deriveReqt>>"
+  !endif
+  !if %strpos($result_and_cause, "s") >= 0
+    $separate($result_and_cause, "s")
+    !$results = $right_side
+    !$causes = $left_side
+    !$connector = "<.."
+    !$kind = "<<satisfy>>"
+  !endif
+
+  ' Split results
+  !local $result_list = %splitstr($results, " ")
+  !foreach $result in $result_list
+    ' Split causes
+    !local $cause_list = %splitstr($causes, " ")
+    !foreach $cause in $cause_list
+      !if $kind == ""
+        $result $connector $cause
+      !else
+        $result $connector $cause: $kind
+      !endif
+    !endfor
+  !endfor
+  !local $param_num = $param_num + 1
+!endfor
+!endprocedure
+
+@enduml

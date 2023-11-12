@@ -1,0 +1,134 @@
+@startuml
+!include https://raw.githubusercontent.com/akr81/ProcessFlowDiagram/main/lib/utility.pu
+' Injection
+' Procedure for injection for FRT
+!procedure $injection($injections)
+  ' Separate $requirements to (title, text) list
+  !local $word_list = %splitstr($injections, ",")
+  !foreach $word in $word_list
+    !local $color = ""
+    $separate($word, "#")
+    !$word = $left_side
+    !$color = $right_side
+
+    !local $number = $numbering()
+    !if (%substr($word, 0, 1) == " ")
+      ' Skip
+    !else
+      !$word = $newline_formatter($word)
+      !if $color != ""
+        class "i##$number##.##$word" as i##$number <<Injection>> #$color
+      !else
+        class "i##$number##.##$word" as i##$number <<Injection>>
+      !endif
+    !endif
+  !endfor
+  ' Reset unique No
+  !$unique_no = 0
+!endprocedure
+
+' Relations parser for CRT etc.
+' [in] $result_and_causes  List of result and causes separated by ",".
+'                          Each result and causes should be "1 < 2 3".
+'                          1: result, 2, 3: causes (separated by < or >)
+!procedure $connect_result_from_causes($result_and_causes)
+!local $result_and_cause_list = %splitstr($result_and_causes, ",")
+
+' Start from 1 because 0 use to judge char
+!local $param_num = 1
+!foreach $result_and_cause in $result_and_cause_list
+  ' Split result and causes
+  !local $results = ""
+  !local $causes = ""
+  !if %strpos($result_and_cause, ">") >= 0
+    $separate($result_and_cause, ">")
+    !$results = $right_side
+    !$causes = $left_side
+  !endif
+  !if %strpos($result_and_cause, "<") >= 0
+    $separate($result_and_cause, "<")
+    !$results = $left_side
+    !$causes = $right_side
+  !endif
+
+  ' Split results
+  !local $result_list = %splitstr($results, " ")
+  !local $cause_to_banana = 0
+  !foreach $result in $result_list
+    ' Split causes
+    !local $cause_list = %splitstr($causes, " ")
+    !foreach $cause in $cause_list
+      !local $final_letter = %substr($cause, %strlen($cause)-1, 1)
+      !if (%intval($final_letter) == 0) && ($final_letter != 0)
+        ' Final letter is character (AND connection via usecase)
+        !local $cause_num = %substr($cause, 0, %strlen($cause)-1)
+        $banana($param_num, $final_letter)
+        ' (banana) <-- cause should be only once for each cause
+        !if $cause_to_banana == 0
+          $param_num##$final_letter <-- $cause_num
+        !endif
+        $result <-- $param_num##$final_letter
+      !else
+        ' Normal connection
+        $result <-- $cause
+      !endif
+    !endfor
+    ' cause to banana done
+    !$cause_to_banana = 1
+  !endfor
+  !local $param_num = $param_num + 1
+!endfor
+!endprocedure
+
+' Banana for CRT etc.
+' [in] $param_num  Specify nested level (parameter)
+' [in] $sub        Specify name of banana (one character)
+!procedure $banana($param_num, $sub="")
+!if $numbered == 1
+  ' Output numbered entiry
+  usecase "$sub" as $param_num##$sub
+!else
+  ' Output non-numbered entiry
+  usecase " " as $param_num##$sub
+!endif
+!endprocedure
+
+' !!! DEPRECATED !!!
+' CRT(Current Reality Tree)
+' [in] $result    Specify result
+' [in] $cause     Causes of result. It should be written as string with "," delimiter.
+' [in] $draft     If specified, make models (optional, default as true)
+!procedure $crt($result, $cause, $draft="true")
+  ' Add usecase type model as process
+  !if ($draft != "")
+    agent "$result" as $replace($result)
+  !endif
+
+  ' Repeat by ","
+  !while (%strlen($cause) >= $minpos($cause))
+    ' Separate string by ","
+    !local $sub = %substr($cause, 0, $minpos($cause))
+
+    ' Add agent type model as input
+    !if ($draft != "")
+      agent "$sub" as $replace($sub)
+    !endif
+
+    ' Decide connection direction
+    $replace($result) <-- $replace($sub)
+
+    ' Update $cause
+    !$cause = %substr($cause, $minpos($cause) + 1)
+  !endwhile
+
+  !if (%strlen($cause) != 0)
+    !if ($draft != "")
+      agent "$cause" as $replace($cause)
+    !endif
+
+    ' last element
+    $replace($result) <-- $replace($cause)
+  !endif
+!endprocedure
+
+@enduml

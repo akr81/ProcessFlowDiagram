@@ -1,0 +1,329 @@
+@startuml
+!include https://raw.githubusercontent.com/akr81/ProcessFlowDiagram/main/lib/utility.pu
+' Default delimiter
+' If you want to use other than "," as separator, please modify or overwrite this.
+!$default_delimiter = ","
+
+' Delimiter setting
+' If you familiar with English, It might be better not to use SPACE as delimiter.
+' 1: Use space as delimiter (default)
+' 0: Not use space as delimiter (comma only)
+!$space_delimiter = 1
+
+' Invalid constant
+' %strpos() returns -1 if not matched.
+' But this value seems not comparable value.
+!$invalid_value = 65535
+
+' d
+' Procedure for PFD process in/out with draft mode
+' [in] $outputs Process outputs. It should be written as string with "," delimiter.
+' [in] $inputs  Process inputs. It should be written as string with "," delimiter.
+' [in] $process Specify process
+!procedure $d($outputs, $inputs, $process)
+  $process_in($process, $inputs, "true")
+  $process_out($process, $outputs, "true")
+!endprocedure
+
+' process_in
+' Procedure for PFD process input
+' [in] $process Specify process
+' [in] $inputs  Process inputs. It should be written as string with "," delimiter.
+' [in] $draft   If specified, make models (optional)
+!procedure $process_in($process, $inputs, $draft="")
+  $process_common($process, $inputs, "i", $draft)
+!endprocedure
+
+' process_out
+' Procedure for PFD process output
+' [in] $process  Specify process
+' [in] $outputs  Process outputs. It should be written as string with "," delimiter.
+' [in] $draft    If specified, make models (optional)
+!procedure $process_out($process, $outputs, $draft="")
+  $process_common($process, $outputs, "o", $draft)
+!endprocedure
+
+' process_common
+' Common procedure for both in/out
+' Note: This should called by other procedure
+' [in] $process   Specify process
+' [in] $inout     Process inputs/outputs. It should be written as string with "," delimiter.
+' [in] $mode      Mode of inout (ex. "i" or "o")
+' [in] $draft     If specified, make models (optional)
+!procedure $process_common($process, $inout, $mode, $draft="")
+  ' Add usecase as process
+  !if %strlen($process) > 0
+    usecase "$process" as $replace($process)
+  !endif
+
+  ' Add input/output with splitting
+  !if $space_delimiter > 0
+    !local $word_list = %splitstr($inout, ",| ")
+  !else
+    !local $word_list = %splitstr($inout, ",")
+  !endif
+  !foreach $word in $word_list
+    !local $raw_word = $word
+    !if ($is_cloud($word) == %true())
+      ' remove prefix
+      !local $raw_word = %substr($word, 2, %strlen($word))
+      cloud "$raw_word" as $replace($raw_word)
+    !else
+      agent "$raw_word" as $replace($raw_word)
+    !endif
+
+    ' Add connector
+    !if (%strlen($process) > 0)
+      !if ($mode == "i")
+        $replace($raw_word) --> $replace($process)
+      !else
+        $replace($process) --> $replace($raw_word)
+      !endif
+    !endif
+  !endfor
+!endprocedure
+
+' c
+' Overwrite deliverable element with specified color.
+' [in] $color   Specify color
+' [in] $inout   Process inputs/outputs. It should be written as string with "," delimiter.
+!procedure $c($color, $inout)
+  ' Repeat by ","
+  !while (%strlen($inout) >= $minpos($inout))
+    ' Separate string by ","
+    !local $sub = %substr($inout, 0, $minpos($inout))
+
+    ' Add agent type model as input
+    !if ($draft != "")
+      !if ($is_cloud($sub) == %true())
+        ' remove prefix
+        !local $sub = %substr($sub, 2, %strlen($sub))
+        cloud "$sub" as $replace($sub) $color
+      !else
+        agent "$sub" as $replace($sub) $color
+      !endif
+    !endif
+
+    ' Update $inout
+    !$inout = %substr($inout, $minpos($inout) + 1)
+  !endwhile
+
+  !if ($draft != "")
+    !if ($is_cloud($inout) == %true())
+      ' remove prefix
+      !$inout = %substr($inout, 2, %strlen($inout))
+      cloud "$inout" as $replace($inout) $color
+    !else
+      agent "$inout" as $replace($inout) $color
+    !endif
+  !endif
+!endprocedure
+
+' cp
+' Overwrite process element with specified color.
+' [in] $color   Specify color
+' [in] $inout   Processes. It should be written as string with "," delimiter.
+!procedure $cp($color, $inout)
+  ' Repeat by ","
+  !while (%strlen($inout) >= $minpos($inout))
+    ' Separate string by ","
+    !local $sub = %substr($inout, 0, $minpos($inout))
+
+    ' Add usecase type model as input
+    !if ($draft != "")
+      usecase "$sub" as $replace($sub) $color
+    !endif
+
+    ' Update $inout
+    !$inout = %substr($inout, $minpos($inout) + 1)
+  !endwhile
+
+  !if ($draft != "")
+    usecase "$inout" as $replace($inout) $color
+  !endif
+!endprocedure
+
+' minpos function
+' Return smaller position of delimiter
+' [in] string
+!function $minpos($string)
+  ' delimiter
+  !if %strpos($string, $default_delimiter) >= 0
+    !local $len_to_comma = %strpos($string, $default_delimiter)
+  !else
+    !local $len_to_comma = $invalid_value
+  !endif
+  !if %strpos($string, " ") >= 0
+    !local $len_to_space = %strpos($string, " ")
+  !else
+    !local $len_to_space = $invalid_value
+  !endif
+
+  !if ($space_delimiter != 1)
+    ' Not use space as delimiter
+    !local $len_to_space = $invalid_value
+  !endif
+
+  ' Comparing variable and negative value does not work well.
+  !if ($len_to_comma == $invalid_value) && ($len_to_space == $invalid_value)
+    !local $retval = $invalid_value
+  !elseif ($len_to_comma == $invalid_value)
+    !local $retval = $len_to_space
+  !elseif ($len_to_space == $invalid_value)
+    !local $retval = $len_to_comma
+  !else
+    ' Both values are not invalid
+    !if ($len_to_comma > $len_to_space)
+      !local $retval = $len_to_space
+    !else
+      !local $retval = $len_to_comma
+    !endif
+  !endif
+  !return $retval
+!endfunction
+
+
+' replace
+' Replace symbol or other special string to ""
+' Because alias should not include symbol etc.
+' [in] string
+' [ret] replaced string
+!function $replace($string)
+  !local $string = $replace_newline($string)
+  !local $string = $replace_obsidian_internal_link($string)
+  !local $string = $replace_symbol($string)
+  !return $string
+!endfunction
+
+' replace_obsidian_internal_link
+' Replace PlantUML plugin for Obsidian internal link
+' e.g. [[obsidian://open?vault=FOO&file=BAR ALIAS]]
+' [in] Obsidian internal link string
+' [out] replaced ALIAS string
+!function $replace_obsidian_internal_link($string)
+  !if %strpos($string, "obsidian://open?vault=") > 0
+    'Extract ALIAS part
+    !local $array = %splitstr($string, " ")
+    !local $counter = 0
+    !local $string = ""
+    $counter
+    !foreach $separated in $array
+      !if $counter == 0
+        ' nop to remove first element
+      !else
+        !local $string = $string + $separated
+      !endif
+      !$counter = $counter + 1
+    !endfor
+  !else
+    !local $string = $string
+  !endif
+  !return $string
+!endfunction
+
+' replace_symbol
+' Replace symbol character to ""
+' [in] string
+' [ret] replaced string
+!function $replace_symbol($string)
+  !local $index = 0
+  !local $ret_str = ""
+  !while $index != %strlen($string)
+    !local $sub = %substr($string, $index, 1)
+
+    ' replace symbol to ""
+    !if %strpos("!?#/-()^:'[] IH”E|`ijOQF", $sub) >= 0
+      !local $sub = "_"
+    !endif
+
+    !$ret_str = $ret_str + $sub
+    !$index = $index + 1
+  !endwhile
+  !return $ret_str
+!endfunction
+
+' replace_newline
+' Replace "\n" to ""
+' [in] string
+' [ret] replaced string
+!function $replace_newline($string)
+  !local $index = 0
+  !local $ret_str = ""
+  !while $index < %strlen($string)
+    ' Get two chars as unit for "\n" check
+    !local $sub = %substr($string, $index, 2)
+    ' replace \n to ""
+    !if %strpos("\n", $sub) >= 0
+      !local $sub = ""
+    !endif
+
+    !if ($sub == "")
+      ' Replaced
+      !$ret_str = $ret_str + $sub
+      ' Due to 2 char replaced, increment index 2
+      !$index = $index + 2
+    !else
+      ' Not replaced
+      ' First char is confirmed to use
+      !$ret_str = $ret_str + %substr($sub, 0, 1)
+      !$index = $index + 1
+    !endif
+  !endwhile
+  !return $ret_str
+!endfunction
+
+' Process definition with numbered aliaces
+' [in] inout_aliaces input/output entity aliaces that separated by ">" or "<" and space.
+' [in] process Process name (with color specification)
+!procedure $p($inout_aliaces, $process)
+  ' Define process as usecase
+  !local $title = ""
+  !local $color = ""
+  ' Increment number
+  !local $number = $numbering()
+  !if %strpos($process, "#") >= 0
+    $separate($process, "#")
+    !$title = $left_side
+    !$color = $right_side
+    !$title = $newline_formatter($title)
+    !if $numbered == 1
+      usecase "p##$number##.##$title" as p##$number #$color
+    !else
+      usecase "$title" as p##$number #$color
+    !endif
+  !else
+    !$title = $process
+    !$title = $newline_formatter($title)
+    !if $numbered == 1
+      usecase "p##$number##.##$title" as p##$number
+    !else
+      usecase "$title" as p##$number
+    !endif
+  !endif
+  !local $inputs = ""
+  !local $outputs = ""
+  !if %strpos($inout_aliaces, ">") >= 0
+    $separate($inout_aliaces, ">")
+    !$inputs = $left_side
+    !$outputs = $right_side
+  !endif
+  !if %strpos($inout_aliaces, "<") >= 0
+    $separate($inout_aliaces, "<")
+    !$inputs = $right_side
+    !$outputs = $left_side
+  !endif
+
+  ' Connect inputs to process
+  !local $input_list = %splitstr($inputs, " ")
+  !foreach $input in $input_list
+    $input --> p##$number
+  !endfor
+
+  ' Connect process to outputs
+  !local $output_list = %splitstr($outputs, " ")
+  !foreach $output in $output_list
+    p##$number --> $output
+  !endfor
+!endprocedure
+
+@enduml
