@@ -1,5 +1,5 @@
 @startuml
-!include https://raw.githubusercontent.com/akr81/ProcessFlowDiagram/main/utility.pu
+!include utility.pu
 
 ' Class setting
 hide circle
