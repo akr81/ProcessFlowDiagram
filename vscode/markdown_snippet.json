@@ -3,7 +3,6 @@
     "prefix": "pfd_old",
     "body": [
       "```puml",
-      "!import ../ProcessFlowDiagram/pfd_lib.zip",
       "!include pfd_tool.pu",
       "!\\$space_delimiter = 1",
       "left to right direction",
@@ -54,7 +53,6 @@
     "prefix": "pfd",
     "body": [
       "```puml",
-      "!import ../ProcessFlowDiagram/pfd_lib.zip",
       "!include pfd_tool.pu",
       "!\\$numbered = 1",
       "!\\$target_length = 15",
@@ -122,7 +120,6 @@
     "prefix": "crt",
     "body": [
       "```puml",
-      "!import ../ProcessFlowDiagram/pfd_lib.zip",
       "!include crt_tool.pu",
       "!\\$numbered = 1",
       "!\\$target_length = 15",
@@ -148,7 +145,6 @@
     "prefix": "req",
     "body": [
       "```puml",
-      "!import ../ProcessFlowDiagram/pfd_lib.zip",
       "!include req_tool.pu",
       "!\\$numbered = 1",
       "!\\$target_length = 15",
@@ -181,7 +177,6 @@
     "prefix": "cloud",
     "body": [
       "```puml",
-      "!import ../ProcessFlowDiagram/pfd_lib.zip",
       "!include ec_tool.pu",
       "!\\$space_delimiter = 1",
       "left to right direction",

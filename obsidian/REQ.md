@@ -1,5 +1,4 @@
 ```puml
-!import ../ProcessFlowDiagram/pfd_lib.zip
 !include req_tool.pu
 !$numbered = 1
 !$target_length = 15

@@ -1,5 +1,4 @@
 ```puml
-!import ../ProcessFlowDiagram/pfd_lib.zip
 !include crt_tool.pu
 !$numbered = 1
 !$target_length = 15
@@ -12,6 +11,11 @@ UDE #pink,\
 cause1,\
 cause2,\
 cause3,\
+")
+
+$injection("\
+,\
+,\
 ")
 
 $connect_result_from_causes("\
