@@ -38,46 +38,50 @@
 ' Start from 1 because 0 use to judge char
 !local $param_num = 1
 !foreach $result_and_cause in $result_and_cause_list
-  ' Split result and causes
-  !local $results = ""
-  !local $causes = ""
-  !if %strpos($result_and_cause, ">") >= 0
-    $separate($result_and_cause, ">")
-    !$results = $right_side
-    !$causes = $left_side
-  !endif
-  !if %strpos($result_and_cause, "<") >= 0
-    $separate($result_and_cause, "<")
-    !$results = $left_side
-    !$causes = $right_side
-  !endif
+  !if (%substr($result_and_cause, 0, 1) == " ")
+    ' Skip
+  !else
+    ' Split result and causes
+    !local $results = ""
+    !local $causes = ""
+    !if %strpos($result_and_cause, ">") >= 0
+      $separate($result_and_cause, ">")
+      !$results = $right_side
+      !$causes = $left_side
+    !endif
+    !if %strpos($result_and_cause, "<") >= 0
+      $separate($result_and_cause, "<")
+      !$results = $left_side
+      !$causes = $right_side
+    !endif
 
-  ' Split results
-  !local $result_list = %splitstr($results, " ")
-  !local $cause_to_banana = 0
-  !foreach $result in $result_list
-    ' Split causes
-    !local $cause_list = %splitstr($causes, " ")
-    !foreach $cause in $cause_list
-      !local $final_letter = %substr($cause, %strlen($cause)-1, 1)
-      !if (%intval($final_letter) == 0) && ($final_letter != 0)
-        ' Final letter is character (AND connection via usecase)
-        !local $cause_num = %substr($cause, 0, %strlen($cause)-1)
-        $banana($param_num, $final_letter)
-        ' (banana) <-- cause should be only once for each cause
-        !if $cause_to_banana == 0
-          $param_num##$final_letter <-- $cause_num
+    ' Split results
+    !local $result_list = %splitstr($results, " ")
+    !local $cause_to_banana = 0
+    !foreach $result in $result_list
+      ' Split causes
+      !local $cause_list = %splitstr($causes, " ")
+      !foreach $cause in $cause_list
+        !local $final_letter = %substr($cause, %strlen($cause)-1, 1)
+        !if (%intval($final_letter) == 0) && ($final_letter != 0)
+          ' Final letter is character (AND connection via usecase)
+          !local $cause_num = %substr($cause, 0, %strlen($cause)-1)
+          $banana($param_num, $final_letter)
+          ' (banana) <-- cause should be only once for each cause
+          !if $cause_to_banana == 0
+            $param_num##$final_letter <-- $cause_num
+          !endif
+          $result <-- $param_num##$final_letter
+        !else
+          ' Normal connection
+          $result <-- $cause
         !endif
-        $result <-- $param_num##$final_letter
-      !else
-        ' Normal connection
-        $result <-- $cause
-      !endif
+      !endfor
+      ' cause to banana done
+      !$cause_to_banana = 1
     !endfor
-    ' cause to banana done
-    !$cause_to_banana = 1
-  !endfor
-  !local $param_num = $param_num + 1
+    !local $param_num = $param_num + 1
+  !endif
 !endfor
 !endprocedure
 
