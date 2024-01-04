@@ -3,6 +3,7 @@
 ' Evaporating cloud(head)
 ' [in] $mission   The mission of the cloud
 !procedure $head($mission)
+  !$mission = $newline_formatter($mission)
   agent "$mission" as head
 !endprocedure
 
@@ -18,12 +19,16 @@
 ' Evaporating cloud(right)
 ' [in] $mission   The mission of the cloud
 !procedure $right($shoulder, $hand)
+  !$shoulder = $newline_formatter($shoulder)
+  !$hand = $newline_formatter($hand)
   $shoulder_hand($shoulder, $hand, "right")
 !endprocedure
 
 ' Evaporating cloud(left)
 ' [in] $mission   The mission of the cloud
 !procedure $left($shoulder, $hand)
+  !$shoulder = $newline_formatter($shoulder)
+  !$hand = $newline_formatter($hand)
   $shoulder_hand($shoulder, $hand, "left")
 !endprocedure
 
