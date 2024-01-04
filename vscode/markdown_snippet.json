@@ -179,6 +179,8 @@
       "```puml",
       "!include ec_tool.pu",
       "!\\$space_delimiter = 1",
+      "!\\$target_length = 15",
+      "!\\$newline_at_space = 0",
       "left to right direction",
       "",
       "\\$head(\"$1The mission\")",
