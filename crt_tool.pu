@@ -28,6 +28,14 @@
   !$unique_no = 0
 !endprocedure
 
+' Shorten alias for connect_result_from_causes.
+' [in] $result_and_causes  List of result and causes separated by ",".
+'                          Each result and causes should be "1 < 2 3".
+'                          1: result, 2, 3: causes (separated by < or >)
+!procedure $connect($result_and_causes)
+  $connect_result_from_causes($result_and_causes)
+!endprocedure
+
 ' Relations parser for CRT etc.
 ' [in] $result_and_causes  List of result and causes separated by ",".
 '                          Each result and causes should be "1 < 2 3".
