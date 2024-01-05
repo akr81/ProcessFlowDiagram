@@ -13,13 +13,14 @@ PlantUML + VSCode(またはObsidian)でプロセスフロー図(PFD)を描くた
 - [ProcessFlowDiagram tool](#processflowdiagram-tool)
   - [環境](#環境)
   - [使用方法](#使用方法)
-    - [PFD](#pfd)
+    - [ProcessFlowDiagram(PFD)](#processflowdiagrampfd)
       - [include](#include)
       - [entities](#entities)
       - [p](#p)
-    - [CRT](#crt)
+    - [Current Reality Tree (CRT)](#current-reality-tree-crt)
+      - [include](#include-1)
       - [entities](#entities-1)
-      - [connect\_result\_from\_causes](#connect_result_from_causes)
+      - [connect](#connect)
     - [プロシージャの設定](#プロシージャの設定)
       - [項目番号の表示/非表示](#項目番号の表示非表示)
       - [改行の自動挿入](#改行の自動挿入)
@@ -50,31 +51,33 @@ PlantUML + VSCode(またはObsidian)でプロセスフロー図(PFD)を描くた
 
 ## 使用方法
 
-### PFD
+### ProcessFlowDiagram(PFD)
 
-PFDは`入出力(中間成果物)`(四角形)と`プロセス`(楕円)からなる図で、本プロシージャはその定義・接続の記述を簡略化するためのものです。
+PFDは`入出力(中間成果物)`(四角形、無形の場合は雲形)と`プロセス`(楕円)からなる図で、本プロシージャはその定義・接続の記述を簡略化するためのものです。
 
-![サンプル](http://www.plantuml.com/plantuml/png/HS_1IWCn483XUvuYJNkei6p8hWSfA3s8Pn-W8Ddis0wRJ48oG_7jZNhm-C_73CoviQyiAQeTKeYoWhunbtQojlhxU4M-oI8DQiZ4G3o6dApVwfEpxpK7QEqjvlih-clroIQFPCld-i4vnx68Khi3ILgWmggVjLFgq6yW8xIZkIWaDrnKE25Dmq_D-uAq_OwoyBvjNqiKw6qU-cOv6gSd_Q9dCsZJV2eHN9S_c3iy_iFKuGoqzi--0G00)
+![サンプル](./image/3376d634bee260a9cbec1b0b140d1884_MD5.png)
 
-上記サンプルを出力するための[サンプルコード](https://www.plantuml.com/plantuml/uml/HS-nQWCn383XtK_XEXrI26Tyrw5aA1bAvpv0e3W-DH5doyQI2NtxYdRe9AIFVz299NOP9Pi7f9J72lOcqlZeVO_twOfo6vV1q5Cb0P8frUBZrb-2_-Wr0VDxhlStZDSUYoyHoRUlzLDgpLCRnZngWuB0UtSsIE5mDkc8DEj4MdODQVizrI4xthulUO3kxadBjdV1plRLBkvW7SVICWILFrWKdlzXLZW1hVh93m00)をベースに説明します。
+上記サンプル画像を、このようなコードで出力することができます。
+
+```puml
+!include pfd_tool.pu
+
+$entities("\
+in1,\
+c:in2,\
+in3#pink,\
+c:out#skyblue,\
+")
+
+$p("1 2 > 3", "sample1")
+$p("1 3 > 4", "sample2")
+```
+
 
 #### include
 
-`pfd_tool.pu`に必要なプロシージャが定義されているため、まずはこのファイルをincludeする必要があります。
-
-(1)ローカルにダウンロードしたライブラリファイル(`pfd_lib.zip`)からincludeする場合と、(2)ネットワーク経由でincludeする場合の2通りがあります。  
-実行環境に応じた方を利用してください。
-
-(1)の場合
-```
-!import PATH_TO_LIB/pfd_lib.zip
-!include pfd_tool.pu
-```
-
-(2)の場合
-```
-!include https://raw.githubusercontent.com/akr81/ProcessFlowDiagram/main/pfd_tool.pu
-```
+`pfd_tool.pu`に必要なプロシージャが定義されているため、まずはこのファイルをincludeする必要があります。  
+編集しているドキュメントファイルから`pfd_tool.pu`への相対パス、または絶対パスを指定してください。
 
 #### entities
 
@@ -83,7 +86,7 @@ $entities("入出力1,入出力2,...")
 ```
 
 PFDを構成する入出力((中間)成果物)を、","区切りで定義します。  
-**定義した順**にエイリアスとして`連番`が付与され、サンプル画像のように標準では`連番`つきで表示されます。  
+**定義した順**にエイリアスとして連番が付与され、サンプル画像のように標準では連番つきで表示されます。  
 (非表示にしたい場合は、[項目番号の表示/非表示](#%E9%A0%85%E7%9B%AE%E7%95%AA%E5%8F%B7%E3%81%AE%E8%A1%A8%E7%A4%BA%E9%9D%9E%E8%A1%A8%E7%A4%BA)を参照してください)。
 
 各成果物について、以下の装飾をすることができます。
@@ -92,11 +95,6 @@ PFDを構成する入出力((中間)成果物)を、","区切りで定義しま�
   - 表示を雲形(cloud)とします。
 - 末尾に`#COLOR`を付与
   - 表示色を`COLOR`にします。
-
-[サンプルコード](https://www.plantuml.com/plantuml/uml/3SwnZeCm303GFLzn1pVSIOY8wr8nCLIT-mTL22vO97OKsqBz-pA-xKsYeQhbvBwHOh85lZRL8gFtDHpzYhhPR08rCYcGzf6p3tkz3lvHEOB8FV5nmx3Ma7qEIBwybgSofxwOSpz0YeeWlmtIqCKHwRz3khG5QJ_9fgtixpaPD7zk0bhEomS0)
-
-![サンプル](https://www.plantuml.com/plantuml/png/3SwnZeCm303GFLzn1pVSIOY8wr8nCLIT-mTL22vO97OKsqBz-pA-xKsYeQhbvBwHOh85lZRL8gFtDHpzYhhPR08rCYcGzf6p3tkz3lvHEOB8FV5nmx3Ma7qEIBwybgSofxwOSpz0YeeWlmtIqCKHwRz3khG5QJ_9fgtixpaPD7zk0bhEomS0)
-
 
 #### p
 
@@ -110,27 +108,47 @@ $p("入力1 入力2 > 出力", "プロセス名")
 
 プロセスについても、`$entities`と同様に表示色を設定することができます。
 
-[サンプルコード](https://www.plantuml.com/plantuml/uml/JS-nJiCm4CRnFKzXt0v5YcAICA0Eg0DYvWtGrJdQa-spvJkhuktnWA3Zz_zDtqaKghOKXmTY7zk6vgfQvEXSXTjq8RssSnEiFhCYw-HpSX3go-m-QlOeyXxpxOtWKY6v1CIkV6sVcdESIXia41VeP3XlA5ZCydGNAt3uZSCUMKa9vM29vz4VYPUHUDqLuj1dRhgJy7sE3UtZi2y7Evl5l9hLZiOAf19n_eErm_C_B1s64_BMZ_u0)
-
-![サンプル](https://www.plantuml.com/plantuml/png/JS-nJiCm4CRnFKzXt0v5YcAICA0Eg0DYvWtGrJdQa-spvJkhuktnWA3Zz_zDtqaKghOKXmTY7zk6vgfQvEXSXTjq8RssSnEiFhCYw-HpSX3go-m-QlOeyXxpxOtWKY6v1CIkV6sVcdESIXia41VeP3XlA5ZCydGNAt3uZSCUMKa9vM29vz4VYPUHUDqLuj1dRhgJy7sE3UtZi2y7Evl5l9hLZiOAf19n_eErm_C_B1s64_BMZ_u0)
-
-
-### CRT
+### Current Reality Tree (CRT)
 
 原因と結果を因果で表すCRT(現状ツリー)風の図を描くために使用します。
 
-[サンプルコード](https://www.plantuml.com/plantuml/uml/DSonJiCm4CRntKzX2WD8A5RQj48Cg4DXPc6h51tNexLgtqNdi_hwEA1Ctt_uzDiN0xMQaxkBZAcUo5_Cfl8QWiAjEqUxrEzQI57OYAr3oG6k-jA7JnMaKZwIt0uHpWevP8WSK6qqaTHDrRa7OeiMgJokZkxhy7u_HRu-7nr2G_ibrajibXYMsBPOFJK8XPdGHgLIauq_AdcS7__q6lm6_03-pS_gjksCxjeEVZRwLhi_QazygZdz0W00)
+![サンプル](./image/4769e369e542f6a514df0960061b2d91_MD5.png)
 
-![サンプル](https://www.plantuml.com/plantuml/png/DSonJiCm4CRntKzX2WD8A5RQj48Cg4DXPc6h51tNexLgtqNdi_hwEA1Ctt_uzDiN0xMQaxkBZAcUo5_Cfl8QWiAjEqUxrEzQI57OYAr3oG6k-jA7JnMaKZwIt0uHpWevP8WSK6qqaTHDrRa7OeiMgJokZkxhy7u_HRu-7nr2G_ibrajibXYMsBPOFJK8XPdGHgLIauq_AdcS7__q6lm6_03-pS_gjksCxjeEVZRwLhi_QazygZdz0W00)
+上記サンプル画像を、このようなコードで出力することができます。
+
+```puml
+!include crt_tool.pu
+
+$entities("\
+UDE#pink,\
+cause1,\
+cause2,\
+cause3,\
+cause4,\
+cause5,\
+")
+
+$connect("\
+2a 3a 4a > 1,\
+5 > 2,\
+6 > 4 5,\
+1 > 6\
+")
+```
+
+#### include
+
+`crt_tool.pu`に必要なプロシージャが定義されているため、まずはこのファイルをincludeする必要があります。  
+編集しているドキュメントファイルから`crt_tool.pu`への相対パス、または絶対パスを指定してください。
 
 #### entities
 
 PFDの場合と同様です。
 
-#### connect_result_from_causes
+#### connect
 
 ```
-$connect_result_from_causes("原因1 原因2 > 結果1, 原因3 原因4 > 結果2")
+$connect("原因1 原因2 > 結果1, 原因3 原因4 > 結果2")
 ```
 
 `$entity`で定義された要素を原因/結果として接続し、因果関係を表します。
@@ -146,12 +164,9 @@ $connect_result_from_causes("原因1 原因2 > 結果1, 原因3 原因4 > 結果
 いずれもinclude後、プロシージャの呼び出し前に設定する必要があります。
 
 #### 項目番号の表示/非表示
+
 `!$numbered = 0`と設定すると、定義された入出力とプロセスに付与された連番を非表示にすることができます。  
-
-[サンプルコード](https://www.plantuml.com/plantuml/uml/HScnJiCm403GtL_XkXcA5CKaOK2LG1qGCt-07ETeJx7FbkzE5NzF9Ze-lGjBQA8vcGDIJBg2lObKFdlVmdsuejnqKOOM2mcG3B5a7xRsElglLY8mVwPo_y1mRI7x791y_Lc_fPGqL3Ncq97c1Hgiziq-6zC12Ge2dnpIsCSpqjGZpSUAjEqiAaVUVfUau9vCLqzkj9DzjxFhhUEGQuBnF-OzNXunxN41MZMdFm00)
-
-![サンプル](https://www.plantuml.com/plantuml/png/HScnJiCm403GtL_XkXcA5CKaOK2LG1qGCt-07ETeJx7FbkzE5NzF9Ze-lGjBQA8vcGDIJBg2lObKFdlVmdsuejnqKOOM2mcG3B5a7xRsElglLY8mVwPo_y1mRI7x791y_Lc_fPGqL3Ncq97c1Hgiziq-6zC12Ge2dnpIsCSpqjGZpSUAjEqiAaVUVfUau9vCLqzkj9DzjxFhhUEGQuBnF-OzNXunxN41MZMdFm00)
-
+連番のエイリアス作成自体は実行されるため、プロセスや接続の指定に使用することは可能です。
 
 #### 改行の自動挿入
 
