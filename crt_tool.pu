@@ -66,10 +66,22 @@
     ' Split results
     !local $result_list = %splitstr($results, " ")
     !local $cause_to_banana = 0
+    !local $arrow = ""
+    !local $arrow_note = ""
     !foreach $result in $result_list
       ' Split causes
       !local $cause_list = %splitstr($causes, " ")
       !foreach $cause in $cause_list
+        !local $first_letter = %substr($cause, 0, 1)
+        !if ($first_letter == "d") || ($first_letter == "D")
+          !$arrow = "<.."
+          ' To avoid making the desk look messy, I don't use a notebook at the moment.
+          '!$arrow_note = ": Delay"
+          !$cause = %substr($cause, 1, %strlen($cause)-1)
+        !else
+          !$arrow = "<--"
+          !$arrow_note = ""
+        !endif
         !local $final_letter = %substr($cause, %strlen($cause)-1, 1)
         !if (%intval($final_letter) == 0) && ($final_letter != 0)
           ' Final letter is character (AND connection via usecase)
@@ -77,12 +89,12 @@
           $banana($param_num, $final_letter)
           ' (banana) <-- cause should be only once for each cause
           !if $cause_to_banana == 0
-            $param_num##$final_letter <-- $cause_num
+            $param_num##$final_letter $arrow $cause_num $arrow_note
           !endif
-          $result <-- $param_num##$final_letter
+          $result $arrow $param_num##$final_letter $arrow_note
         !else
           ' Normal connection
-          $result <-- $cause
+          $result $arrow $cause $arrow_note
         !endif
       !endfor
       ' cause to banana done
