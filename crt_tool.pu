@@ -68,20 +68,33 @@
     !local $cause_to_banana = 0
     !local $arrow = ""
     !local $arrow_note = ""
+    !local $arrow_color = ""
     !foreach $result in $result_list
       ' Split causes
       !local $cause_list = %splitstr($causes, " ")
       !foreach $cause in $cause_list
+        ' Determine positive/negative
+        !local $first_letter = %substr($cause, 0, 1)
+        !if ($first_letter == "p") || ($first_letter == "P")
+          !$arrow_color = "[#red]"
+          !$cause = %substr($cause, 1, %strlen($cause)-1)
+        !elseif ($first_letter == "n") || ($first_letter == "N")
+          !$arrow_color = "[#blue]"
+          !$cause = %substr($cause, 1, %strlen($cause)-1)
+        !else
+          ' nop
+        !endif
+        ' Determine delay
         !local $first_letter = %substr($cause, 0, 1)
         !if ($first_letter == "d") || ($first_letter == "D")
-          !$arrow = "<.."
+          !$arrow = "<." + $arrow_color + "."
           ' To avoid making the desk look messy, I don't use a notebook at the moment.
           '!$arrow_note = ": Delay"
           !$cause = %substr($cause, 1, %strlen($cause)-1)
         !else
-          !$arrow = "<--"
-          !$arrow_note = ""
+          !$arrow = "<-" + $arrow_color + "-"
         !endif
+
         !local $final_letter = %substr($cause, %strlen($cause)-1, 1)
         !if (%intval($final_letter) == 0) && ($final_letter != 0)
           ' Final letter is character (AND connection via usecase)
